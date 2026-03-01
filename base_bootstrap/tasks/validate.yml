@@ -22,11 +22,11 @@
 - name: Verify admin user is in sudo group
   ansible.builtin.getent:
     database: group
-    key: sudo
+    key: "{{ bootstrap_sudo_group }}"
   register: sudo_group
 
 - name: Assert admin user is in sudo group
   ansible.builtin.assert:
     that:
-      - bootstrap_user in (sudo_group.ansible_facts.getent_group['sudo'][2] | default(''))
+      - bootstrap_user in (sudo_group.ansible_facts.getent_group['sudo'][2] | default('') | string | split(','))
     fail_msg: "Admin user is not in the sudo group"

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.0]
+### Added
+- Introduced `_common` role directory with shared `tasks/task_flow.yml` orchestrator for consistent role execution flow (assert, install, configure, validate).
+### Changed
+- Added `base_bootstrap` role tag variable (`_role_tag: base_bootstrap`) to orchestrated task flow.
+
 ## [v0.1.0] - 2026-02-27 
 ### Added
 - Project-wide README at root with usage, features, and contribution guidelines
