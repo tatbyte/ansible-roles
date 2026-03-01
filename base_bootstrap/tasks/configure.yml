@@ -13,7 +13,7 @@
     name: "{{ bootstrap_user }}"
     state: present
     shell: "{{ user_shell }}"
-    groups: sudo
+    groups: "{{ bootstrap_sudo_group | default('sudo') }}"
     append: yes
     uid: "{{ bootstrap_puid }}"
     group: "{{ bootstrap_pgid }}"
