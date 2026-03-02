@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Added `base_bootstrap` role tag variable (`_role_tag: base_bootstrap`) to orchestrated task flow.
 
-## [v0.1.0] - 2026-02-27 
+## [v0.1.0] - 2026-02-27
 ### Added
 - Project-wide README at root with usage, features, and contribution guidelines
 - `_common/README.md` explaining the shared task flow orchestrator

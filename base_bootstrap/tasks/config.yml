@@ -5,7 +5,7 @@
   ansible.builtin.getent:
     database: passwd
     key: "{{ bootstrap_user }}"
-  ignore_errors: yes
+  ignore_errors: true
   register: user_exists
 
 - name: Ensure admin user exists
@@ -14,12 +14,12 @@
     state: present
     shell: "{{ user_shell }}"
     groups: "{{ bootstrap_sudo_group | default('sudo') }}"
-    append: yes
+    append: true
     uid: "{{ bootstrap_puid }}"
     group: "{{ bootstrap_pgid }}"
 
 - name: Add main authorized_keys for admin user
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ bootstrap_user }}"
     state: present
     key: "{{ bootstrap_authorized_key }}"
