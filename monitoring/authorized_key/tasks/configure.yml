@@ -2,7 +2,7 @@
 # monitoring/authorized_key: configuration
 
 - name: Add monitoring authorized key
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ monitoring_authorized_user }}"
     state: present
     key: "{{ monitoring_authorized_key }}"

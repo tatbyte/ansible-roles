@@ -10,10 +10,9 @@ task_flow:
   # Profiles/categories used by roles
   profiles:
     # Standard
-    full:       [assert, install, config, validate]
-    config:     [assert, config, validate]
-    guard:      [assert]
-
+    full: [assert, install, config, validate]
+    config: [assert, config, validate]
+    guard: [assert]
     # Dev profiles (skip validate while iterating)
-    full_dev:   [assert, install, config]
+    full_dev: [assert, install, config]
     config_dev: [assert, config]
