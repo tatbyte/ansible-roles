@@ -1,10 +1,13 @@
-# [v0.3.2] - 2026-03-03
+## [v0.3.2] - 2026-03-03
 ### Added
-- `docs/00-pre-commit.mb`: New documentation explaining pre-commit installation, usage, and linting setup for all roles.
+- Documentation for pre-commit installation, usage, and linting setup for all roles (`docs/00-pre-commit.md`).
 - Updated root `README.md` to include pre-commit usage, installation, and linting details, referencing the new docs and configuration.
 
 ### Changed
-- `.pre-commit-config.yaml`: Cleaned up and future-proofed ansible-lint hook to lint all YAML files and `ansible.cfg`, covering all current and future roles automatically.
+- Enhanced `.pre-commit-config.yaml`: Cleaned up and future-proofed ansible-lint hook to lint all YAML files and `ansible.cfg`, covering all current and future roles automatically.
+
+### Merged
+- Merged PR #11: Enhance pre-commit setup, clean up ansible-lint configuration, and add documentation for installation and usage.
 
 # Changelog
 
