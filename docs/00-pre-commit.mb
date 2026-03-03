@@ -1,0 +1,85 @@
+# Pre-commit Setup and Usage
+
+This guide explains how to install, configure, and use pre-commit in this repository to ensure code quality and consistency.
+
+## What is pre-commit?
+Pre-commit is a framework for managing and maintaining multi-language pre-commit hooks. Hooks are scripts that run automatically before you commit changes to your repository, helping catch issues early.
+
+## Installation
+
+1. **Install pre-commit (system-wide or with pipx):**
+  ```sh
+  # With pipx (recommended)
+  pip install pipx
+  pipx install pre-commit
+
+  # Or with pip (system-wide)
+  pip install pre-commit
+
+  # Or with Homebrew (macOS/Linux)
+  brew install pre-commit
+
+  # Or with apt (Debian/Ubuntu)
+  sudo apt-get install pre-commit
+  ```
+
+2. **Install pipx (recommended for ansible-lint):**
+  ```sh
+  pip install pipx
+  pipx install ansible-lint
+  ```
+
+## Setup
+
+1. **Initialize pre-commit in your repo:**
+   ```sh
+   pre-commit install
+   ```
+   This sets up the git hook so pre-commit runs automatically on `git commit`.
+
+2. **Run pre-commit manually:**
+   ```sh
+   pre-commit run --all-files
+   ```
+   This runs all configured hooks on every file in the repository.
+
+## How it works in this repo
+- The `.pre-commit-config.yaml` file defines hooks for:
+  - Trailing whitespace
+  - End-of-file fixer
+  - Merge conflict check
+  - YAML syntax and style (yamllint)
+  - Ansible linting (ansible-lint)
+- The ansible-lint hook is configured to lint all YAML files and `ansible.cfg`, so new roles are automatically covered.
+
+## Troubleshooting
+- If you see errors about unstaged configuration, run:
+  ```sh
+  git add .pre-commit-config.yaml
+  ```
+- If hooks modify files, re-add and recommit as needed.
+- For more details, see [pre-commit documentation](https://pre-commit.com/).
+
+## Updating Hooks
+- To update hook versions, edit `.pre-commit-config.yaml` and run:
+  ```sh
+  pre-commit autoupdate
+  ```
+
+## Useful Commands
+- Run on changed files:
+  ```sh
+  pre-commit run
+  ```
+- Run on all files:
+  ```sh
+  pre-commit run --all-files
+  ```
+- List available hooks:
+  ```sh
+  pre-commit run --list
+  ```
+
+---
+
+For questions or help, contact the repository maintainer.

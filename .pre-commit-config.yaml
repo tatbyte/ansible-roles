@@ -1,17 +1,14 @@
 repos:
-  # General hygiene / safe checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-merge-conflict
-      # --unsafe is needed for Ansible repos that use !vault tags
       - id: check-yaml
         args: ["--unsafe"]
       - id: check-added-large-files
 
-  # YAML style — relaxed rules that coexist with Ansible conventions
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0
     hooks:
@@ -30,30 +27,12 @@ repos:
               }
             }
 
-  # Ansible linting — use pipx-installed binary (avoids pre-commit venv issues)
   - repo: local
     hooks:
       - id: ansible-lint
         name: ansible-lint (pipx)
-        # -q reduces noise (still fails on real violations)
         entry: ansible-lint -q
         language: system
-        # Let ansible-lint discover project structure itself
         pass_filenames: false
-        # Only trigger when Ansible-related files change
-        files: |
-          (?x)^(
-            ansible\.cfg|
-            _common/.*\.ya?ml|
-            base/.*\.ya?ml|
-            base_bootstrap/.*\.ya?ml|
-            monitoring/.*\.ya?ml
-          )$
-        exclude: |
-          (?x)^(
-            \.git/|
-            \.cache/|
-            \.venv/|
-            vendor/|
-            collections/
-          )
+        files: (?x)^(ansible\.cfg|.*\.ya?ml)$
+        exclude: (?x)^(\n          \.git/|\n          \.cache/|\n          \.venv/|\n          vendor/|\n          collections/\n        )
