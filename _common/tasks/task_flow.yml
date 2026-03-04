@@ -1,17 +1,21 @@
 ---
-# _common/tasks/task_flow.yml
-#
-# Inputs:
+# roles/_common/tasks/task_flow.yml
+# Shared task-flow orchestrator for roles that follow the "phases" pattern.
+# Inputs (from caller role/tasks/main.yml):
 #   _role_enabled: optional bool (default true)
 #   _role_tag: optional role tag string (e.g., "base_bootstrap")
-#   _task_flow_profile: required unless _task_flow_phases_override is provided; profile name (full|config|guard|full_dev|config_dev)
-#   _task_flow_phases_override: optional list of phases (escape hatch; avoids profile)
-#
+#   _task_flow_profile: required unless _task_flow_phases_override is provided
+#   _task_flow_phases_override: optional list of phases (escape hatch)
+# Inventory variables (group_vars/host_vars):
+#   task_flow_summary_mode: phase|role|none
+#   task_flow_debug: true|false
 # Behavior:
-# - Canonical order + profiles come from: _common/vars/task_flow.yml
-# - Included phase tasks get tags: [_role_tag, <phase>]
-# - If _role_enabled is false, role ends immediately
-# - Fails fast with a friendly message if tasks/<phase>.yml is missing
+# - Canonical order + profiles come from: roles/_common/vars/task_flow.yml
+# - If role is disabled, this file will skip the role (no host-level end)
+# - Includes phase tasks in canonical order
+# - Applies tags to included tasks: [_role_tag, <phase>]
+# - Optional debug output shows what was selected and phase starts
+# Note: No success line here; wrapper handles single success print.
 
 - name: Load canonical task flow config (order + profiles)
   ansible.builtin.include_vars:
@@ -19,26 +23,46 @@
     name: _tf
   tags: always
 
-- name: Validate _task_flow_profile is provided and supported
+- name: Compute role enabled
+  ansible.builtin.set_fact:
+    _task_flow_role_enabled: "{{ _role_enabled | default(true) | bool }}"
+  tags: always
+
+- name: "Debug: role skipped (disabled)"
+  ansible.builtin.debug:
+    msg: "[SKIP] {{ _role_tag | default(role_name | default('role')) }} skipped (disabled)"
+  changed_when: false
+  when:
+    - not _task_flow_role_enabled
+    - task_flow_debug | default(false) | bool
+  tags: always
+
+- name: "Validate _task_flow_profile is provided and supported"
   ansible.builtin.assert:
     that:
       - _task_flow_profile is defined
       - _task_flow_profile in _tf.task_flow.profiles
+    quiet: true
     fail_msg: >-
       _task_flow_profile must be one of: {{ _tf.task_flow.profiles.keys() | list }}
-  when: _task_flow_phases_override is not defined
+  when:
+    - _task_flow_role_enabled
+    - _task_flow_phases_override is not defined
   tags: always
 
-- name: Validate override phases are supported (escape hatch)
+- name: "Validate override phases are supported (escape hatch)"
   ansible.builtin.assert:
     that:
       - _task_flow_phases_override is sequence
       - (_task_flow_phases_override | length) > 0
       - (_task_flow_phases_override | difference(_tf.task_flow.order) | length) == 0
+    quiet: true
     fail_msg: >-
       Unknown override phase(s): {{ _task_flow_phases_override | difference(_tf.task_flow.order) }}.
       Supported phases: {{ _tf.task_flow.order }}.
-  when: _task_flow_phases_override is defined
+  when:
+    - _task_flow_role_enabled
+    - _task_flow_phases_override is defined
   tags: always
 
 - name: Compute effective phases (profile or override)
@@ -48,6 +72,23 @@
         _task_flow_phases_override
           | default(_tf.task_flow.profiles[_task_flow_profile])
       }}
+  when: _task_flow_role_enabled
+  tags: always
+
+- name: "Debug: show selection inputs + effective phases"
+  ansible.builtin.debug:
+    msg:
+      role_tag: "{{ _role_tag | default(role_name | default('role')) }}"
+      role_enabled: "{{ _task_flow_role_enabled }}"
+      profile: "{{ _task_flow_profile | default('override') }}"
+      override_phases: "{{ _task_flow_phases_override | default([]) }}"
+      effective_phases: "{{ _task_flow_phases_effective | default([]) }}"
+      summary_mode: "{{ task_flow_summary_mode | default('role') }}"
+      debug: "{{ task_flow_debug | default(false) | bool }}"
+  changed_when: false
+  when:
+    - _task_flow_role_enabled
+    - task_flow_debug | default(false) | bool
   tags: always
 
 - name: "Pre-check: ensure required phase task files exist (friendly errors)"
@@ -57,24 +98,66 @@
   register: _task_flow_phase_files
   delegate_to: localhost
   become: false
-  become_user: "{{ ansible_user | default(omit) }}"
+  vars:
+    ansible_become: false
   run_once: true
+  when: _task_flow_role_enabled
   tags: always
 
 - name: Fail if a phase task file is missing
   ansible.builtin.assert:
     that:
       - item.stat.exists
+    quiet: true
     fail_msg: >-
       Missing task file for phase '{{ item.item }}':
       expected {{ role_path }}/tasks/{{ item.item }}.yml
   loop: "{{ _task_flow_phase_files.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: _task_flow_role_enabled
   tags: always
 
-- name: Run selected phases in canonical order
-  ansible.builtin.include_tasks:
-    file: "{{ role_path }}/tasks/{{ item }}.yml"
-    apply:
-      tags: "{{ ([_role_tag] if (_role_tag is defined and (_role_tag | length > 0)) else []) + [item] }}"
-  loop: "{{ _tf.task_flow.order }}"
-  when: item in _task_flow_phases_effective
+- name: Run phases (selected)
+  vars:
+    _role_label: "{{ _role_tag | default(role_name | default('role')) }}"
+    _summary: "{{ task_flow_summary_mode | default('role') }}"
+    _dbg: "{{ task_flow_debug | default(false) | bool }}"
+  when: _task_flow_role_enabled
+  block:
+    - name: "Phase start (debug)"
+      ansible.builtin.debug:
+        msg: "[START] {{ _role_label }} :: {{ item }} start"
+      changed_when: false
+      loop: "{{ _tf.task_flow.order }}"
+      loop_control:
+        label: "{{ item }}"
+      when: _dbg and item in _task_flow_phases_effective
+
+    - name: "Include phase tasks"
+      ansible.builtin.include_tasks:
+        file: "{{ role_path }}/tasks/{{ item }}.yml"
+        apply:
+          tags: >-
+            {{
+              ([_role_tag] if (_role_tag is defined and (_role_tag | length > 0)) else [])
+              + [item]
+            }}
+      loop: "{{ _tf.task_flow.order }}"
+      when: item in _task_flow_phases_effective
+
+    - name: "Phase passed (summary)"
+      ansible.builtin.debug:
+        msg: "[OK] {{ _role_label }} :: {{ item }} passed"
+      changed_when: false
+      loop: "{{ (_summary == 'phase') | ternary(_task_flow_phases_effective, []) }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: "Role passed (summary)"
+      ansible.builtin.debug:
+        msg: "[OK] {{ _role_label }} :: role passed"
+      changed_when: false
+      when:
+        - _summary == "role"
+        - not _dbg

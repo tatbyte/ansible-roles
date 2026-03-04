@@ -1,0 +1,19 @@
+---
+# Success summary output:
+# phase = print [OK] per phase
+# role  = print [OK] once per role
+# none  = print nothing on success (only failures)
+task_flow_summary_mode: "role"
+
+# Debug/breadcrumb output from task flow:
+# true  = print extra info (profile/effective phases/start markers)
+# false = minimal prints
+task_flow_debug: false
+
+# Role-level success line from _common wrapper:
+# false = suppress "[OK] <role> :: _common passed" for quieter runs
+# true  = print one success line per role when summary_mode == role
+task_flow_role_success_output: false
+
+# Optional role enable behavior (caller may override)
+_role_enabled: true

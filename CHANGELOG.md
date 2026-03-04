@@ -14,6 +14,14 @@ All notable changes to this project will be documented in this file.
   - Added safety hooks (`check-case-conflict`, `detect-private-key`).
   - Simplified ansible-lint trigger to YAML files only.
 - Updated root `README.md` pre-commit section and quick start instructions for accuracy.
+- `_common/tasks/task_flow.yml`:
+  - Added optional `_task_flow_debug` and `_task_flow_summary` outputs.
+  - Clean role-disable handling (skip role; no end_host/role errors).
+  - Added quiet summary/phase breadcrumbs per `task_flow_summary_mode`.
+- `_common/tasks/main.yml`: NEW quiet wrapper that emits a single success/fail line and delegates to task_flow; fixed include path to shared task_flow and suppresses success message on failures.
+- `_common/defaults/main.yml`: NEW defaults for summary/debug and `_role_enabled`.
+- `_common/vars/task_flow.yml`: Guard profile now runs `assert` + `validate`.
+- `base_bootstrap/tasks/main.yml`: Uses the quiet wrapper and passes `_role_enabled` via vars (no `when`).
 
 ### Removed
 - Removed root `ansible.cfg` (not required for this roles-only repository).

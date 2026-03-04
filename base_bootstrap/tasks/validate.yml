@@ -11,12 +11,14 @@
   ansible.builtin.assert:
     that:
       - bootstrap_user in user_check.ansible_facts.getent_passwd
+    quiet: true
     fail_msg: "Admin user does not exist"
 
 - name: Assert admin user shell is correct
   ansible.builtin.assert:
     that:
       - user_check.ansible_facts.getent_passwd[bootstrap_user][5] == user_shell
+    quiet: true
     fail_msg: "Admin user shell does not match expected value"
 
 - name: Verify admin user is in sudo group
@@ -29,4 +31,5 @@
   ansible.builtin.assert:
     that:
       - bootstrap_user in (sudo_group.ansible_facts.getent_group[bootstrap_sudo_group][2] | default('') | string | split(','))
+    quiet: true
     fail_msg: "Admin user is not in the sudo group"

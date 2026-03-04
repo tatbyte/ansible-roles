@@ -1,5 +1,9 @@
 ---
 # Default variables for bootstrap role
+base_bootstrap_enabled: true
+base_bootstrap_task_flow_profile: config
+base_bootstrap_task_flow_summary_mode: role
+base_bootstrap_task_flow_debug: false
 bootstrap_user: admin
 bootstrap_puid: 1000
 bootstrap_pgid: 1000

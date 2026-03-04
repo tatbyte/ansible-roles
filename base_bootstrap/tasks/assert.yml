@@ -6,6 +6,7 @@
     that:
       - bootstrap_user is defined
       - bootstrap_user | length > 0
+    quiet: true
     fail_msg: "Required variables are not defined"
 
 - name: Validate PUID and PGID are valid numbers
@@ -15,6 +16,7 @@
       - bootstrap_pgid is number
       - bootstrap_puid | int >= 1000
       - bootstrap_pgid | int >= 1000
+    quiet: true
     fail_msg: "PUID and PGID must be valid numbers >= 1000"
 
 - name: Validate user_shell is defined
@@ -23,6 +25,7 @@
       - user_shell is defined
       - user_shell | length > 0
       - user_shell.startswith('/')
+    quiet: true
     fail_msg: "user_shell must be defined and be an absolute path"
 
 - name: Validate bootstrap_authorized_key if defined
@@ -30,5 +33,6 @@
     that:
       - bootstrap_authorized_key | length > 0
       - bootstrap_authorized_key.startswith('ssh-')
+    quiet: true
     fail_msg: "bootstrap_authorized_key must be a valid SSH public key"
   when: bootstrap_authorized_key is defined and bootstrap_authorized_key != ''

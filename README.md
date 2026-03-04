@@ -53,6 +53,9 @@ This repository uses [pre-commit](https://pre-commit.com/) to enforce code quali
 
 ## Development
 - See `_common/README.md` for the shared task flow pattern.
+- `_common/README.md` also documents summary/debug output controls and the recommended
+  custom callback pattern for quiet role-level output in consuming repositories.
+- For a focused output/summary reference, see `docs/10-common-task-flow-output.md`.
 - Each role contains its own README with usage and variable documentation.
 - Test roles using the provided playbooks in your consuming project.
 

@@ -1,0 +1,50 @@
+---
+# roles/_common/tasks/main.yml
+#
+# QUIET WRAPPER:
+# Roles should include this file (not task_flow.yml directly) to keep output minimal.
+# - Success: optional single [OK] (controlled by task_flow_summary_mode)
+# - Failure: single [FAIL] then re-fail (Ansible still shows failing task output)
+#
+# Control knobs (typically set in inventory/group_vars):
+# - task_flow_summary_mode: phase|role|none
+# - task_flow_debug: true|false
+
+- name: "_common wrapper: run task flow"
+  vars:
+    _common_label: "{{ _role_tag | default(role_name | default('role')) }}"
+    _summary: "{{ task_flow_summary_mode | default('role') }}"
+    _dbg: "{{ task_flow_debug | default(false) | bool }}"
+    _role_success_output: "{{ task_flow_role_success_output | default(false) | bool }}"
+  block:
+
+    - name: "_common: load defaults"
+      ansible.builtin.include_vars:
+        file: "{{ role_path }}/../_common/defaults/main.yml"
+      tags: always
+
+    - name: "_common: execute task_flow.yml"
+      ansible.builtin.include_tasks: "{{ role_path }}/../_common/tasks/task_flow.yml"
+
+  rescue:
+    - name: "[FAIL] _common failed"
+      ansible.builtin.debug:
+        msg: "[FAIL] {{ _common_label }} :: _common failed (see failing task output above)"
+      changed_when: false
+      register: _common_fail_debug
+
+    - name: "Stop on _common failure"
+      ansible.builtin.fail:
+        msg: "Stopping: {{ _common_label }} failed in _common"
+      register: _common_fail_stop
+
+  always:
+    - name: "[OK] _common passed"
+      ansible.builtin.debug:
+        msg: "[OK] {{ _common_label }} :: _common passed"
+      changed_when: false
+      when:
+        - (_common_fail_debug is not defined) and (_common_fail_stop is not defined)
+        - not _dbg
+        - _summary == "role"
+        - _role_success_output

@@ -12,7 +12,7 @@ task_flow:
     # Standard
     full: [assert, install, config, validate]
     config: [assert, config, validate]
-    guard: [assert]
+    guard: [assert, validate]
     # Dev profiles (skip validate while iterating)
     full_dev: [assert, install, config]
     config_dev: [assert, config]

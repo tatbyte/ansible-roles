@@ -1,12 +1,10 @@
 ---
-# monitoring/authorized_key — main orchestrator
-# Adds an SSH authorized key for inter-host monitoring/alert/backup/status access
-# Task flow: assert → configure → validate
-
-- name: Execute task flow
-  ansible.builtin.include_tasks: ../../../_common/tasks/task_flow.yml
+- name: Execute authorized_key task flow
+  ansible.builtin.include_tasks: ../../../_common/tasks/main.yml
   vars:
-    _task_flow_phases:
+    _role_tag: "monitoring_authorized_key"
+    _role_enabled: "{{ monitoring_authorized_key_enabled | default(true) | bool }}"
+    _task_flow_phases_override:
       - assert
-      - configure
+      - config
       - validate
