@@ -12,11 +12,12 @@ Bootstraps a host by creating and validating an admin user and SSH access.
 
 | Variable                  | Default     | Required | Description                                 |
 |---------------------------|-------------|----------|---------------------------------------------|
-| `bootstrap_user`          | `admin`     | yes      | Admin username                              |
-| `bootstrap_puid`          | `1000`      | yes      | UID for admin user (>= 1000)                |
-| `bootstrap_pgid`          | `1000`      | yes      | GID for admin user (>= 1000)                |
-| `user_shell`              | `/bin/bash` | yes      | Shell for admin user (absolute path)        |
-| `bootstrap_authorized_key`| `""`       | no       | SSH public key to add to admin user         |
+| `base_bootstrap_user`           | `admin`     | yes      | Admin username                              |
+| `base_bootstrap_puid`           | `1000`      | yes      | UID for admin user (>= 1000)                |
+| `base_bootstrap_pgid`           | `1000`      | yes      | GID for admin user (>= 1000)                |
+| `base_bootstrap_sudo_group`     | `sudo`      | yes      | Sudo-capable group that must include user   |
+| `base_bootstrap_user_shell`     | `/bin/bash` | yes      | Shell for admin user (absolute path)        |
+| `base_bootstrap_authorized_key` | `""`        | no       | SSH public key to add to admin user         |
 
 ## Usage
 
@@ -30,12 +31,6 @@ Include the `base_bootstrap` role in your playbook:
 
 ## Dependencies
 None
-
-## License
-MIT
-
-## Author
-Tatbyte
 
 ## Author
 tatbyte

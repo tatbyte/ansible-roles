@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.5.1]
+### Changed
+- `roles/base_bootstrap/tasks/main.yml`: Removed redundant `Base_bootstrap | ` prefix from imported task block names to avoid duplicated role name in Ansible output.
+- `roles/base_bootstrap/tasks/validate.yml`: Consolidated `getent` lookups into a single looped task and merged all assertions into one task. Added authorized key presence check against the admin user's `authorized_keys` file.
+- `roles/base_bootstrap/tasks/assert.yml`: Combined user/shell/uid/gid assertions into a single task for reduced output noise.
+- `roles/base_bootstrap/tasks/config.yml`: No structural changes; aligned with updated task naming conventions.
+
 ## [v0.5.0]
 ### Refactored
 - Refactored variable naming in all roles to use role-specific prefixes for ansible-lint compliance.
