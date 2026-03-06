@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.5.0]
+### Refactored
+- Refactored variable naming in all roles to use role-specific prefixes for ansible-lint compliance.
+- Capitalized all task names for lint and readability.
+- Fixed YAML syntax, indentation, and document start markers in all task files.
+- Updated and added roles/monitoring_authorized_key/tasks/main.yml for new task structure and lint compliance.
+
 ## [v0.4.0]
 ### Added
 - Added tests/README.md with documentation for new test files and structure.
@@ -10,7 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Renamed docs/01.md to docs/01-test-lab.md for clarity.
 
-## [v0.3.2] - 2026-03-04
+## [v0.3.2]
 ### Added
 - Documentation for pre-commit installation, usage, and linting setup for all roles (`docs/00-pre-commit.mb`).
 - Added troubleshooting/common failure guidance for local pre-commit environments (cache permissions, missing `ansible-lint`, hook bootstrap issues).
@@ -29,7 +36,7 @@ All notable changes to this project will be documented in this file.
 ### Merged
 - Merged PR #11: Enhance pre-commit setup, clean up ansible-lint configuration, and add documentation for installation and usage.
 
-## [v0.3.1] - 2026-03-02
+## [v0.3.1]
 ### Added
 - `.pre-commit-config.yaml`: Added and refined pre-commit configuration for linting and hygiene (trailing whitespace, EOF, merge conflicts, YAML validation, yamllint, ansible-lint).
 - Pre-commit now uses relaxed yamllint rules for Ansible YAML conventions.

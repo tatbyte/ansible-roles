@@ -1,20 +1,6 @@
 ---
 # Global variables for all hosts in the test lab
 
-# From _common/vars/task_flow.yml
-task_flow:
-  order:
-    - assert
-    - install
-    - config
-    - validate
-  profiles:
-    full: [assert, install, config, validate]
-    config: [assert, config, validate]
-    guard: [assert]
-    full_dev: [assert, install, config]
-    config_dev: [assert, config]
-
 # ── base_bootstrap ───────────────────────
 base_bootstrap_enabled: true
 bootstrap_user: admin
