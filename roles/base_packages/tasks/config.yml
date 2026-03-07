@@ -1,0 +1,8 @@
+---
+# base_packages configuration tasks
+
+- name: "Config | Ensure unwanted packages are absent"
+  ansible.builtin.package:
+    name: "{{ base_packages_remove }}"
+    state: absent
+  when: base_packages_remove | length > 0

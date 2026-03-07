@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.0]
+### Added
+- `roles/base_packages/`: New role for managing common packages. Includes assert, install, config, and validate phase tasks.
+- `roles/base/meta/main.yml`: Enabled base_packages role as a dependency of base.
+- `examples/`: New directory for example lab files (inventory, group_vars, playbooks, ansible.cfg).
+- `examples/README.md`: Documentation for example test lab usage and structure.
+- `docs/01-examples.md`: Example lab documentation, replacing test lab setup.
+- `docs/02-role-workflow.md`: Role workflow guide, including phase structure and note that not all phases are required.
+
+### Changed
+- Migrated test lab files from `tests/` to `examples/` for clarity and separation of tests vs examples.
+- Removed `tests/inventory/group_vars/all.yml` (now in `examples/inventory/group_vars/all.yml`).
+- Updated `roles/base_bootstrap/tasks/main.yml` to simplify tags and remove redundant prefixes.
+
 ## [v0.5.1]
 ### Changed
 - `roles/base_bootstrap/tasks/main.yml`: Removed redundant `Base_bootstrap | ` prefix from imported task block names to avoid duplicated role name in Ansible output.

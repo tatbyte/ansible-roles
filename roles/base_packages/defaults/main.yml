@@ -1,0 +1,4 @@
+---
+# Default variables for base_packages role
+base_packages_install: []
+base_packages_remove: []

@@ -4,8 +4,8 @@
 dependencies:
   - role: base_bootstrap
     tags: [base, base_bootstrap]
-  # - role: base_idmap
-  # - role: base_packages
+  - role: base_packages
+    tags: [base, base_packages]
   # - role: base_timezone
   # - role: base_ntp
   # - role: base_hostname

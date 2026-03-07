@@ -1,0 +1,8 @@
+---
+# base_packages installation tasks
+
+- name: "Install | Ensure requested packages are present"
+  ansible.builtin.package:
+    name: "{{ base_packages_install }}"
+    state: present
+  when: base_packages_install | length > 0
