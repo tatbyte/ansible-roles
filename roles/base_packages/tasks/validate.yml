@@ -1,0 +1,26 @@
+---
+# base_packages validation tasks
+
+- name: "Validate | Gather installed package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Validate | Assert requested install packages are present"
+  ansible.builtin.assert:
+    that:
+      - item in ansible_facts.packages
+    fail_msg: "Package '{{ item }}' is missing after install phase"
+    quiet: true
+  loop: "{{ base_packages_install }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: "Validate | Assert requested removed packages are absent"
+  ansible.builtin.assert:
+    that:
+      - item not in ansible_facts.packages
+    fail_msg: "Package '{{ item }}' is still installed after config phase"
+    quiet: true
+  loop: "{{ base_packages_remove }}"
+  loop_control:
+    label: "{{ item }}"
