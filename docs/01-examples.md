@@ -18,9 +18,9 @@ Use it as a reference template for validating roles on your side.
 - `examples/ansible.cfg`: Example Ansible configuration for local test runs.
 - `examples/inventory/hosts.ini`: Example hosts and groups.
 - `examples/inventory/group_vars/all.yml`: Example variables for all hosts.
-- `examples/playbooks/bootstrap.yml`: Bootstrap phase using initial host credentials.
+- `examples/playbooks/bootstrap.yml`: Bootstrap phase using initial host credentials and the standalone `bootstrap` role.
 - `examples/playbooks/base.yml`: Normal phase for post-bootstrap role execution.
-- `examples/playbooks/site.yml`: Entry playbook that imports both phases in order.
+- `examples/playbooks/site.yml`: Entry playbook that imports `bootstrap.yml` first, then `base.yml`.
 
 ## How to Use the Example
 
@@ -30,6 +30,13 @@ Use it as a reference template for validating roles on your side.
 4. Run the two-phase flow with the provided config pattern:
 
 ```bash
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
+```
+
+Optional phase-specific runs:
+
+```bash
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags bootstrap
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags base
 ```
 

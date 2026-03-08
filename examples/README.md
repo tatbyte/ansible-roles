@@ -6,21 +6,28 @@ This directory contains a minimal local harness for validating roles in this rep
 - `ansible.cfg`: Test-specific Ansible configuration.
 - `inventory/hosts.ini`: Test inventory.
 - `inventory/group_vars/all.yml`: Shared variables for test hosts.
-- `playbooks/bootstrap.yml`: Bootstrap phase (connect as initial admin account).
+- `playbooks/bootstrap.yml`: Bootstrap phase using the standalone `bootstrap` role.
 - `playbooks/base.yml`: Normal phase (connect as automation account).
-- `playbooks/site.yml`: Entry playbook that imports `bootstrap.yml` then `base.yml`.
+- `playbooks/site.yml`: Full provisioning entry playbook that imports `bootstrap.yml` then `base.yml`.
 
 ## Usage
 Run from repository root:
 
 ```sh
-ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags base
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
 ```
 
 Or run directly from the `examples/` directory:
 
 ```sh
-ansible-playbook playbooks/site.yml --tags base
+ansible-playbook playbooks/site.yml
+```
+
+Run only one phase when needed:
+
+```sh
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags bootstrap
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags base
 ```
 
 ## Bootstrap Credentials

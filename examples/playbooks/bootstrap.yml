@@ -6,13 +6,15 @@
     ansible_user: "{{ bootstrap_login_user }}"
     ansible_password: "{{ bootstrap_login_password }}"
     ansible_become_password: "{{ bootstrap_become_password }}"
-    base_run_bootstrap: true
   roles:
-    - role: base
+    - role: bootstrap
+      tags: [bootstrap]
 
 - name: Reset SSH connection after bootstrap
   hosts: bootstrap
   gather_facts: false
+  # Keep the reconnect in the bootstrap playbook so normal base-only runs do not reset SSH.
   tasks:
     - name: Reset SSH connection
       ansible.builtin.meta: reset_connection
+      tags: [bootstrap]

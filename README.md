@@ -10,7 +10,7 @@ This repository is a roles source repository. It is intended to be consumed by a
 ansible-roles/
 ├── roles/
 │   ├── base/
-│   ├── base_bootstrap/
+│   ├── bootstrap/
 │   ├── monitoring/
 │   └── monitoring_authorized_key/
 ├── examples/
@@ -23,8 +23,8 @@ ansible-roles/
 ```
 
 ## Available Roles
-- `base`: Aggregate role that conditionally runs `base_bootstrap` (bootstrap phase) and `base_packages` (normal phase).
-- `base_bootstrap`: Creates and validates the automation account used by later plays (for example `ansible`).
+- `base`: Aggregate role for recurring base configuration (currently `base_packages`).
+- `bootstrap`: Creates and validates the automation account used by later plays (for example `ansible`).
 - `monitoring`: Aggregate role that currently depends on `monitoring_authorized_key`.
 - `monitoring_authorized_key`: Installs an SSH authorized key for monitoring-style access.
 
@@ -43,6 +43,12 @@ Example infra playbook:
 
 ```yaml
 ---
+- name: Bootstrap hosts using initial admin access
+  hosts: bootstrap
+  become: true
+  roles:
+    - role: bootstrap
+
 - name: Apply base setup
   hosts: all
   become: true
@@ -62,13 +68,13 @@ This repository keeps a local test harness in `examples/`.
 Run tests from repo root:
 
 ```sh
-ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags base
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
 ```
 
 Or from the `examples/` directory:
 
 ```sh
-ansible-playbook playbooks/site.yml --tags base
+ansible-playbook playbooks/site.yml
 ```
 
 See [examples/README.md](examples/README.md) and [docs/01-examples.md](docs/01-examples.md) for lab details.
