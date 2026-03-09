@@ -8,10 +8,16 @@ This directory contains a minimal local harness for validating roles in this rep
 - `inventory/group_vars/all.yml`: Shared variables for test hosts.
 - `playbooks/bootstrap.yml`: Bootstrap phase using the standalone `bootstrap` role.
 - `playbooks/base.yml`: Normal phase (connect as automation account).
-- `playbooks/site.yml`: Full provisioning entry playbook that imports `bootstrap.yml` then `base.yml`.
+- `playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
 
 ## Usage
-Run from repository root:
+Run bootstrap from repository root:
+
+```sh
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/bootstrap.yml
+```
+
+Then run the base phase:
 
 ```sh
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
@@ -20,24 +26,22 @@ ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
 Or run directly from the `examples/` directory:
 
 ```sh
+ansible-playbook playbooks/bootstrap.yml
 ansible-playbook playbooks/site.yml
 ```
 
-Run only one phase when needed:
+Equivalent direct base-phase command:
 
 ```sh
-ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags bootstrap
-ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml --tags base
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/base.yml
 ```
 
 ## Bootstrap Credentials
-Bootstrap login values are intentionally stored in inventory for this example:
+The example inventory stores only the bootstrap login user:
 
 - `bootstrap_login_user`
-- `bootstrap_login_password`
-- `bootstrap_become_password`
 
-They live under `[bootstrap:vars]` in `inventory/hosts.ini` and are consumed by `playbooks/bootstrap.yml`.
+The bootstrap password is prompted once by `playbooks/bootstrap.yml` and reused for both SSH login and sudo.
 
 ## Extending
 - Add playbooks under `examples/playbooks/`.

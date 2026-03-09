@@ -65,7 +65,13 @@ Example infra playbook:
 ## Local Role Testing
 This repository keeps a local test harness in `examples/`.
 
-Run tests from repo root:
+Run bootstrap first from repo root:
+
+```sh
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/bootstrap.yml
+```
+
+Then run the base phase:
 
 ```sh
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
@@ -74,6 +80,7 @@ ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
 Or from the `examples/` directory:
 
 ```sh
+ansible-playbook playbooks/bootstrap.yml
 ansible-playbook playbooks/site.yml
 ```
 

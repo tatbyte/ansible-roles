@@ -34,6 +34,8 @@ All notable changes to this project will be documented in this file.
   - `docs/01-examples.md`
   - `roles/base/README.md`
   - `roles/bootstrap/README.md`
+- Documented the example run order as an explicit two-step flow: run `examples/playbooks/bootstrap.yml` first, then run `examples/playbooks/site.yml` or `examples/playbooks/base.yml`.
+- Updated example credential documentation to reflect that `examples/playbooks/bootstrap.yml` prompts once for the bootstrap password and reuses it for both SSH login and sudo.
 
 ### Removed
 - `roles/base_bootstrap/`: Removed the old bootstrap role path after renaming it to the standalone `bootstrap` role.
