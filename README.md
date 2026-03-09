@@ -6,6 +6,10 @@ Explains the role collection layout, the intended consumption pattern from anoth
 ## Overview
 This repository is a roles source repository. It is intended to be consumed by a separate infra repository that contains your environment-specific inventory and playbooks.
 
+## Supported Platforms
+This repository currently targets Debian-family hosts such as Debian and Ubuntu.
+Role implementations, package-management tasks, and example configuration assume APT and Debian-family filesystem conventions.
+
 ## Repository Layout
 ```text
 ansible-roles/
@@ -25,8 +29,9 @@ ansible-roles/
 
 ## Available Roles
 - `bootstrap`: Creates and validates the automation account used after the bootstrap phase.
-- `base`: Aggregates recurring base-phase configuration through dependency roles such as `base_packages` and `base_timezone`.
-- `base_timezone`: Enforces the system timezone during the base phase.
+- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through dependency roles such as `base_packages` and `base_timezone`.
+- `base_locale`: Ensures requested locales exist and configures the system default locale on Debian-family hosts during the base phase.
+- `base_timezone`: Enforces the system timezone on Debian-family hosts during the base phase.
 - `monitoring`: Aggregates monitoring-related configuration through dependency roles such as `monitoring_authorized_key`.
 - `monitoring_authorized_key`: Installs an SSH authorized key for monitoring-style inter-host access.
 

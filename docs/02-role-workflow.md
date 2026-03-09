@@ -1,7 +1,7 @@
 # docs/02-role-workflow.md
 
 Reference for the shared role lifecycle used in this repository.
-Explains the standard phase order and how role task files are expected to map to that workflow.
+Explains the standard phase order and how role task files are expected to map to that workflow in this Debian-family repository.
 
 1. `assert`
 2. `install`
@@ -9,6 +9,7 @@ Explains the standard phase order and how role task files are expected to map to
 4. `validate`
 
 > **Note:** Not all phases are required in every role. For example, some roles may not need an `install` phase if no packages or dependencies are installed. Include only the phases relevant to your role.
+> Repository roles currently target Debian-family hosts such as Debian and Ubuntu, so install and config tasks may assume APT and Debian-family file locations.
 
 ## Phase Purpose
 

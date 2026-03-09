@@ -3,6 +3,41 @@
 Release history for `ansible-roles`.
 Documents notable changes across repository structure, roles, examples, and documentation.
 
+## [v0.9.0]
+### Added
+- `roles/base_locale/`: New role for managing generated locales and system locale categories during the base phase on Debian-family hosts.
+- `roles/base_locale/defaults/main.yml`: Added `base_locale_lang`, `base_locale_lc_all`, `base_locale_lc_time`, `base_locale_packages`, and `base_locale_present` defaults.
+- `roles/base_locale/tasks/`: Added assert, install, config, and validate phase task files for Debian-family locale management.
+- `roles/base_locale/README.md`: Added role documentation for locale management, `LC_TIME` usage, and direct usage.
+- `examples/inventory/group_vars/all/base_locale.yml`: Added example locale variables for the Debian-family example lab.
+
+### Changed
+- `roles/base/meta/main.yml`: Added `base_locale` as a dependency of the `base` role with `base` and `base_locale` tags.
+- `roles/base_packages/tasks/install.yml`: Switched package installation to `ansible.builtin.apt` with APT cache refresh.
+- `roles/base_packages/tasks/config.yml`: Switched package removal to `ansible.builtin.apt`.
+- `roles/base_packages/tasks/validate.yml`: Updated package validation to gather package facts with `manager: apt`.
+- `roles/base_locale/tasks/install.yml`: Uses `ansible.builtin.apt` for locale package installation on Debian-family hosts.
+- `roles/base_locale/tasks/assert.yml`: Tightened supported locale inputs to built-in locales plus Debian-style `ll_CC.CHARMAP` names.
+- `roles/base_locale/tasks/config.yml`: Now fully manages `/etc/locale.gen`, runs `locale-gen` when the managed file changes, and keeps `localedef` only as a fallback for minimal/container environments.
+- `roles/base_locale/tasks/validate.yml`: Now validates the full managed `/etc/locale.gen` content in addition to generated locale availability and configured locale categories.
+- `roles/base_timezone/tasks/install.yml`: Uses `ansible.builtin.apt` for timezone package installation on Debian-family hosts.
+- `README.md`: Added an explicit Debian-family support note and updated role descriptions to match current repository scope.
+- `examples/README.md`: Documented the Debian-family scope of the example lab.
+- `docs/01-examples.md`: Clarified that the example inventory and variables target Debian-family hosts.
+- `docs/02-role-workflow.md`: Clarified that repository role implementations currently assume Debian-family behavior such as APT and Debian-family file locations.
+- `roles/base/README.md`, `roles/bootstrap/README.md`, and `roles/base_timezone/README.md`: Updated wording to reflect Debian-family scope and current role behavior.
+
+### Fixed
+- `roles/base_locale/tasks/validate.yml`: Resolved register overwrite and invalid assert-option failures in locale validation.
+- `roles/base_locale/tasks/config.yml` and `roles/base_locale/tasks/validate.yml`: Restored correct locale normalization logic after lint-driven refactoring so generated locale checks operate on real lists.
+- `roles/base_locale/tasks/config.yml`: Replaced malformed or stale locale state by rewriting `/etc/locale.gen` to the requested canonical Debian entries during convergence.
+- `roles/base_locale/tasks/`: Brought locale tasks into `yamllint` and `ansible-lint` compliance without changing intended behavior.
+
+### Documentation
+- Updated repository and role documentation to state that the repository currently targets Debian-family hosts such as Debian and Ubuntu.
+- Documented 24-hour time configuration through `base_locale_lc_time` in the `base_locale` role README and example variables.
+- Clarified in the `base_locale` role README that locale generation is driven by a fully managed `/etc/locale.gen` file and that supported locale names are built-ins plus `ll_CC.CHARMAP`.
+
 ## [v0.8.0]
 ### Added
 - `roles/base_timezone/`: New role for enforcing the system timezone during the base phase.

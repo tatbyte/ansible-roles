@@ -1,7 +1,7 @@
 # docs/01-examples.md
 
 Reference document for the example lab in `examples/`.
-Explains how the example inventory, variables, and playbooks fit together for the bootstrap phase and the base phase.
+Explains how the example inventory, variables, and playbooks fit together for the bootstrap phase and the base phase on Debian-family hosts.
 
 ## Purpose
 
@@ -13,6 +13,7 @@ The `examples/` directory is an example environment that shows how to wire:
 - `ansible.cfg`
 
 Use it as a reference template for validating roles on your side.
+The example content assumes Debian-family targets such as Debian and Ubuntu.
 
 ## Example Files
 
@@ -49,6 +50,7 @@ ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/base.yml
 ## Notes
 
 - The lab content is intentionally simple and meant as an example baseline.
+- The example inventory and variables assume Debian-family hosts and the repository's APT-based role behavior.
 - `group_vars/all/` is split by role prefix so example variables stay readable as the base stack grows.
 - `hosts.ini` keeps default `ansible_user=ansible` in `[all:vars]`, while `[bootstrap:vars]` holds initial login values used only during bootstrap.
 - `playbooks/bootstrap.yml` prompts once for the bootstrap password and reuses it for both SSH login and sudo.

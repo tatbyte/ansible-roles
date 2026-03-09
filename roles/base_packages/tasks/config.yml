@@ -1,10 +1,10 @@
 ---
 # roles/base_packages/tasks/config.yml
 # Config phase tasks for the `base_packages` role.
-# Removes packages that should be absent after the install phase.
+# Removes packages that should be absent after the install phase with APT.
 
 - name: "Config | Ensure unwanted packages are absent"
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: "{{ base_packages_remove }}"
     state: absent
   when: base_packages_remove | length > 0
