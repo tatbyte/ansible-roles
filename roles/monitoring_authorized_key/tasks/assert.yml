@@ -1,5 +1,7 @@
 ---
-# monitoring/authorized_key: assertions
+# roles/monitoring_authorized_key/tasks/assert.yml
+# Assert phase tasks for the `monitoring_authorized_key` role.
+# Validates the managed user and SSH public key inputs before configuration.
 
 - name: Validate monitoring_authorized_key is defined and non-empty
   ansible.builtin.assert:

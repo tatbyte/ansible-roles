@@ -1,5 +1,7 @@
-## File: roles/base/meta/main.yml
-## Dependencies: List roles required before executing this role, in order of execution
+---
+# roles/base/meta/main.yml
+# Role metadata for `base`.
+# Declares dependency roles that are applied when the base phase runs.
 
 dependencies:
   - role: base_packages

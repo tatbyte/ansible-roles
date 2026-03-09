@@ -1,6 +1,20 @@
-# Changelog
+# CHANGELOG.md
 
-All notable changes to this project will be documented in this file.
+Release history for `ansible-roles`.
+Documents notable changes across repository structure, roles, examples, and documentation.
+
+## [v0.7.1]
+### Changed
+- Normalized file headers across tracked repository files to use a consistent path-first format followed by a short purpose description.
+- Updated example files, role files, repository docs, and tracked dotfiles to use the same header style and wording for bootstrap-phase and base-phase concepts.
+- Replaced older header variants such as generic titles, `# file:` comments, and `## File:` metadata blocks with the shared repository format.
+
+### Documentation
+- Expanded file-level explanations so each tracked document, playbook, config, defaults file, task file, and metadata file now states its repository path and purpose at the top.
+- Clarified intentionally empty role entrypoints by documenting their purpose directly in:
+  - `roles/monitoring/tasks/main.yml`
+  - `roles/monitoring_authorized_key/tasks/install.yml`
+- Added `docs/03-file-consistency.md` to define the repository-wide file header format, wording rules, and review checklist.
 
 ## [v0.7.0]
 ### Added

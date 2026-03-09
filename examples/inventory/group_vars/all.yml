@@ -1,5 +1,7 @@
 ---
-# Global variables for all hosts in the test lab
+# examples/inventory/group_vars/all.yml
+# Shared example variables for the local lab.
+# Defines bootstrap role inputs and base package defaults for the example hosts.
 
 # ── bootstrap ──────────────────────────────────────────────────────────────────
 # Initial ansible account created early in provisioning.

@@ -1,5 +1,7 @@
 ---
-# monitoring/authorized_key: validation
+# roles/monitoring_authorized_key/tasks/validate.yml
+# Validate phase tasks for the `monitoring_authorized_key` role.
+# Verifies the target user home path and the installed authorized key state.
 
 - name: Get User Home Directory
   ansible.builtin.getent:

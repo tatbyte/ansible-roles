@@ -1,6 +1,7 @@
-# monitoring/authorized_key Role
+# roles/monitoring_authorized_key/README.md
 
-Adds an SSH authorized key for inter-host access (monitoring, alerting, backup, status retrieval).
+Reference for the `monitoring_authorized_key` role.
+Explains how the role installs an SSH authorized key for monitoring-style inter-host access.
 
 ## Purpose
 - Allows a specific host (e.g. control) to SSH into other hosts to retrieve information

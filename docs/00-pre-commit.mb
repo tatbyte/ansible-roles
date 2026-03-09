@@ -1,6 +1,7 @@
-# Pre-commit Setup and Usage
+# docs/00-pre-commit.mb
 
-This guide explains how to install, configure, and use pre-commit in this repository to ensure code quality and consistency.
+Reference for repository pre-commit usage.
+Explains how to install, run, troubleshoot, and update the linting hooks used in this repository.
 
 ## What is pre-commit?
 Pre-commit is a framework for managing and maintaining multi-language pre-commit hooks. Hooks are scripts that run automatically before you commit changes to your repository, helping catch issues early.

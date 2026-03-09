@@ -1,6 +1,7 @@
-# base Role
+# roles/base/README.md
 
-Aggregate foundation role for all hosts.
+Reference for the `base` role.
+Explains how the aggregate base role delegates recurring host configuration through role dependencies.
 
 ## Features
 - Runs the recurring base configuration on every `base` execution

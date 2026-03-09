@@ -1,5 +1,7 @@
 ---
-# Bootstrap role: configuration tasks (admin user management)
+# roles/bootstrap/tasks/config.yml
+# Config phase tasks for the `bootstrap` role.
+# Creates and configures the automation account, group membership, sudo policy, and authorized key.
 
 - name: "Config | Ensure Admin Primary Group Exists"
   ansible.builtin.group:

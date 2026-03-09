@@ -1,6 +1,7 @@
-# Role Workflow Guide
+# docs/02-role-workflow.md
 
-This repository uses one standard lifecycle for all roles.
+Reference for the shared role lifecycle used in this repository.
+Explains the standard phase order and how role task files are expected to map to that workflow.
 
 1. `assert`
 2. `install`

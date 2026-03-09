@@ -1,4 +1,7 @@
 ---
-# Default variables for base_packages role
+# roles/base_packages/defaults/main.yml
+# Default variables for the `base_packages` role.
+# Defines package lists to install everywhere and packages to enforce as absent.
+
 base_packages_install: []
 base_packages_remove: []

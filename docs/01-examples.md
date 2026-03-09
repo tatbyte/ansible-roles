@@ -1,6 +1,7 @@
-# Test Lab Example
+# docs/01-examples.md
 
-This document describes the example lab layout provided in `examples/`.
+Reference document for the example lab in `examples/`.
+Explains how the example inventory, variables, and playbooks fit together for the bootstrap phase and the base phase.
 
 ## Purpose
 
@@ -18,8 +19,8 @@ Use it as a reference template for validating roles on your side.
 - `examples/ansible.cfg`: Example Ansible configuration for local test runs.
 - `examples/inventory/hosts.ini`: Example hosts and groups.
 - `examples/inventory/group_vars/all.yml`: Example variables for all hosts.
-- `examples/playbooks/bootstrap.yml`: Bootstrap phase using initial host credentials and the standalone `bootstrap` role.
-- `examples/playbooks/base.yml`: Normal phase for post-bootstrap role execution.
+- `examples/playbooks/bootstrap.yml`: Bootstrap phase playbook that uses initial host credentials and applies the standalone `bootstrap` role.
+- `examples/playbooks/base.yml`: Base phase playbook for post-bootstrap role execution.
 - `examples/playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
 
 ## How to Use the Example

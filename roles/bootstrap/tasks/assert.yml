@@ -1,5 +1,7 @@
 ---
-# Bootstrap role: assertions and validation
+# roles/bootstrap/tasks/assert.yml
+# Assert phase tasks for the `bootstrap` role.
+# Validates the bootstrap variables before account management starts.
 
 - name: "Assert | Validate required bootstrap variables"
   ansible.builtin.assert:

@@ -1,3 +1,6 @@
+# .gitignore
+# Ignore local artifacts, caches, editor settings, and generated files for this repository.
+
 # Ansible local artifacts
 .ansible/
 *.retry
