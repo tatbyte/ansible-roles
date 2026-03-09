@@ -1,0 +1,13 @@
+---
+# roles/base_sshd/defaults/main.yml
+# Default variables for the `base_sshd` role.
+# Defines the SSH daemon package, service, and managed policy values enforced during the base phase.
+
+base_sshd_packages:
+  - openssh-server
+base_sshd_service_name: ssh
+base_sshd_port: 22
+base_sshd_permit_root_login: "no"
+base_sshd_password_authentication: true
+base_sshd_pubkey_authentication: true
+base_sshd_allow_users: []

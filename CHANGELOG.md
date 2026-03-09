@@ -3,6 +3,35 @@
 Release history for `ansible-roles`.
 Documents notable changes across repository structure, roles, examples, and documentation.
 
+## [v0.14.0]
+### Added
+- `roles/base_sshd/`: New role for enforcing an SSH daemon baseline during the base phase.
+- `roles/base_sshd/defaults/main.yml`: Added `base_sshd_packages`, `base_sshd_service_name`, `base_sshd_port`, `base_sshd_permit_root_login`, `base_sshd_password_authentication`, `base_sshd_pubkey_authentication`, and `base_sshd_allow_users` defaults.
+- `roles/base_sshd/tasks/`: Added assert, install, config, and validate phase task files for Debian-family SSH daemon management.
+- `roles/base_sshd/handlers/main.yml`: Added a handler that restarts the managed SSH service after drop-in changes.
+- `roles/base_sshd/templates/sshd_base.conf.j2`: Added a template for the managed `/etc/ssh/sshd_config.d/90-base-sshd.conf` drop-in.
+- `roles/base_sshd/README.md`: Added role documentation for SSH daemon management and direct usage.
+- `examples/inventory/group_vars/all/base_sshd.yml`: Added example SSH daemon variables for the Debian-family example lab.
+- `examples/playbooks/test_base_sshd.yml`: Added an example integration test playbook that temporarily creates extra SSH daemon fragments to exercise merged `AllowUsers` and `Match User` behavior around `base_sshd`.
+
+### Changed
+- `roles/base/meta/main.yml`: Added `base_sshd` as a dependency of the `base` role with `base` and `base_sshd` tags.
+- `roles/base/README.md`: Updated base role documentation to reflect the `base_sshd` dependency, inputs, and active dependency order.
+- `README.md`: Added `base_sshd` to the available roles list and aligned the `base` role description.
+- `examples/README.md`, `docs/01-examples.md`, and `README.md`: Updated the example documentation to include the new `base_sshd.yml` role-scoped variables file and the optional `base_sshd` integration test playbook.
+- `docs/02-role-workflow.md`: Updated the documented aggregate base-role order so `base_sshd` is part of the active sequence and removed it from the future placeholder order.
+
+### Fixed
+- `roles/base_sshd/tasks/validate.yml`, `roles/base_sshd/README.md`, and `examples/inventory/group_vars/all/base_sshd.yml`: Validation and documentation now treat `AllowUsers` as effective SSH daemon state instead of implying that an empty `base_sshd_allow_users` list clears constraints defined elsewhere.
+- `roles/base_sshd/tasks/validate.yml`: Normalized `sshd -T` `AllowUsers` parsing so validation compares the full effective user list instead of only the first reported entry.
+- `roles/base_sshd/tasks/validate.yml`: Relaxed `AllowUsers` validation so the role confirms its required users are present after OpenSSH merges config sources instead of requiring this drop-in to own the complete effective list.
+- `roles/base_sshd/tasks/validate.yml`: Runs `sshd -T` with a representative `-C` connection context and ignores duplicated `allowusers` tokens in merged output so validation behaves better on hosts with `Match` rules or accumulated `AllowUsers` entries.
+- `roles/base_sshd/tasks/validate.yml`: Validates `AllowUsers` per required user context with `sshd -T -C` and checks the reported values without discarding the literal `allowusers` string as a special-case token.
+- `roles/base_sshd/tasks/validate.yml` and `examples/playbooks/test_base_sshd.yml`: Use an IP-only fallback for `sshd -T -C addr=` so validation does not depend on `ansible_host` being an address.
+- `examples/playbooks/test_base_sshd.yml`: Applies `base_sshd` before writing temporary SSH fixture fragments so the integration test still works when `/etc/ssh/sshd_config.d/` does not exist yet.
+- `roles/base_sshd/tasks/validate.yml`: Validates baseline SSH daemon settings with `sshd -T` without a connection-specific context so external `Match` rules do not cause false failures in the role's general setting checks.
+- `examples/playbooks/test_base_sshd.yml`, `examples/README.md`, and `docs/01-examples.md`: Expanded the `base_sshd` integration coverage to exercise a temporary `Match Address` fixture in addition to merged `AllowUsers` and `Match User`.
+
 ## [v0.13.0]
 ### Added
 - `roles/base_sudo/`: New role for enforcing recurring sudo policy during the base phase.

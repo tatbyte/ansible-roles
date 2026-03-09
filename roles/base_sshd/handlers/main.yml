@@ -1,0 +1,9 @@
+---
+# roles/base_sshd/handlers/main.yml
+# Handlers for the `base_sshd` role.
+# Restarts the SSH daemon when the managed base-phase drop-in changes.
+
+- name: Restart SSH service
+  ansible.builtin.service:
+    name: "{{ base_sshd_service_name }}"
+    state: restarted

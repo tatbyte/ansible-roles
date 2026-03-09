@@ -77,16 +77,16 @@ Current order:
 4. `base_ntp`
 5. `base_hostname`
 6. `base_sudo`
+7. `base_sshd`
 
-Use this sequence to keep foundational packages and environment settings first, then time synchronization, then final host identity and sudo policy.
+Use this sequence to keep foundational packages and environment settings first, then time synchronization, then final host identity, sudo policy, and SSH daemon policy.
 
 Planned future additions should follow after the current foundational roles:
 
-1. `base_sshd`
-2. `base_firewall`
-3. `base_logging`
-4. `base_updates`
-5. `base_apparmor`
+1. `base_firewall`
+2. `base_logging`
+3. `base_updates`
+4. `base_apparmor`
 
 ## Tag Usage
 

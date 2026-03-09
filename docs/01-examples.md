@@ -23,6 +23,7 @@ The example content assumes Debian-family targets such as Debian and Ubuntu.
 - `examples/playbooks/bootstrap.yml`: Bootstrap phase playbook that uses initial host credentials and applies the standalone `bootstrap` role.
 - `examples/playbooks/base.yml`: Base phase playbook for post-bootstrap role execution.
 - `examples/playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
+- `examples/playbooks/test_base_sshd.yml`: Optional integration test playbook for exercising merged `sshd_config.d` fragments plus `Match User` and `Match Address` behavior around the `base_sshd` role.
 
 ## How to Use the Example
 
@@ -47,11 +48,18 @@ Equivalent direct base-phase command:
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/base.yml
 ```
 
+Optional `base_sshd` integration check:
+
+```bash
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/test_base_sshd.yml --tags base_sshd
+```
+
 ## Notes
 
 - The lab content is intentionally simple and meant as an example baseline.
 - The example inventory and variables assume Debian-family hosts and the repository's APT-based role behavior.
-- `group_vars/all/` is split by role prefix so example variables such as `base_packages.yml`, `base_hostname.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, and `base_timezone.yml` stay readable as the base stack grows.
+- `group_vars/all/` is split by role prefix so example variables such as `base_packages.yml`, `base_hostname.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, `base_sshd.yml`, and `base_timezone.yml` stay readable as the base stack grows.
 - `hosts.ini` keeps default `ansible_user=ansible` in `[all:vars]`, while `[bootstrap:vars]` holds initial login values used only during bootstrap.
 - `playbooks/bootstrap.yml` prompts once for the bootstrap password and reuses it for both SSH login and sudo.
+- `playbooks/test_base_sshd.yml` removes its temporary SSH fixture files in an `always` block after the integration run, so the example host is returned to the normal post-test state.
 - Extend the inventory, vars, and playbooks to fit your own infrastructure and test scope.

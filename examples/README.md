@@ -10,10 +10,11 @@ The inventory variables and role inputs assume the repository's Debian-family de
 ## Structure
 - `ansible.cfg`: Test-specific Ansible configuration.
 - `inventory/hosts.ini`: Test inventory.
-- `inventory/group_vars/all/`: Shared variables for test hosts, split into per-role files such as `bootstrap.yml`, `base_packages.yml`, `base_hostname.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, and `base_timezone.yml`.
+- `inventory/group_vars/all/`: Shared variables for test hosts, split into per-role files such as `bootstrap.yml`, `base_packages.yml`, `base_hostname.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, `base_sshd.yml`, and `base_timezone.yml`.
 - `playbooks/bootstrap.yml`: Bootstrap phase playbook that connects with the initial admin account and applies the standalone `bootstrap` role.
 - `playbooks/base.yml`: Base phase playbook that connects as the automation account and applies the `base` role.
 - `playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
+- `playbooks/test_base_sshd.yml`: Integration test playbook that temporarily adds extra SSH daemon fragments, runs `base_sshd`, verifies merged `AllowUsers` plus `Match User` and `Match Address` behavior, and removes the temporary fixtures.
 
 ## Usage
 Run bootstrap from repository root:
@@ -40,6 +41,14 @@ Equivalent direct base-phase command:
 ```sh
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/base.yml
 ```
+
+Optional `base_sshd` integration check:
+
+```sh
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/test_base_sshd.yml --tags base_sshd
+```
+
+The SSH integration test playbook cleans up its temporary `/etc/ssh/sshd_config.d/` fixture files in an `always` block, so you do not need to remove them manually after the run.
 
 ## Bootstrap Credentials
 The example inventory stores only the bootstrap login user:

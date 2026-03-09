@@ -16,9 +16,10 @@ dependencies:
     tags: [base, base_hostname]
   - role: base_sudo
     tags: [base, base_sudo]
+  - role: base_sshd
+    tags: [base, base_sshd]
 
 # Future base dependencies:
-# - role: base_sshd
 # - role: base_firewall
 # - role: base_logging
 # - role: base_updates

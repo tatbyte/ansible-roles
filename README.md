@@ -29,11 +29,12 @@ ansible-roles/
 
 ## Available Roles
 - `bootstrap`: Creates and validates the automation account used after the bootstrap phase.
-- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through dependency roles such as `base_packages`, `base_locale`, `base_hostname`, `base_ntp`, `base_sudo`, and `base_timezone`.
+- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through dependency roles such as `base_packages`, `base_locale`, `base_hostname`, `base_ntp`, `base_sudo`, `base_sshd`, and `base_timezone`.
 - `base_hostname`: Enforces the system hostname on Debian-family hosts during the base phase.
 - `base_locale`: Ensures requested locales exist and configures the system default locale on Debian-family hosts during the base phase.
 - `base_ntp`: Configures system time synchronization through `systemd-timesyncd` on Debian-family hosts during the base phase.
 - `base_sudo`: Enforces recurring sudo-group membership and a managed passwordless sudo policy on Debian-family hosts during the base phase.
+- `base_sshd`: Enforces a managed SSH daemon baseline through a dedicated `sshd_config.d` drop-in on Debian-family hosts during the base phase.
 - `base_timezone`: Enforces the system timezone on Debian-family hosts during the base phase.
 - `monitoring`: Aggregates monitoring-related configuration through dependency roles such as `monitoring_authorized_key`.
 - `monitoring_authorized_key`: Installs an SSH authorized key for monitoring-style inter-host access.
@@ -85,6 +86,12 @@ Then run the base phase:
 
 ```sh
 ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
+```
+
+Optional `base_sshd` integration check:
+
+```sh
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/test_base_sshd.yml --tags base_sshd
 ```
 
 Or from the `examples/` directory:

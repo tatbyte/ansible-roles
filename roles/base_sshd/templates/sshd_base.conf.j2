@@ -1,0 +1,10 @@
+{# roles/base_sshd/templates/sshd_base.conf.j2 #}
+{# Template for the managed `/etc/ssh/sshd_config.d/90-base-sshd.conf` file in the `base_sshd` role. #}
+{# Renders the Debian-family SSH daemon baseline managed during the base phase. #}
+Port {{ base_sshd_port }}
+PermitRootLogin {{ base_sshd_permit_root_login }}
+PasswordAuthentication {{ 'yes' if base_sshd_password_authentication else 'no' }}
+PubkeyAuthentication {{ 'yes' if base_sshd_pubkey_authentication else 'no' }}
+{% if base_sshd_allow_users | length > 0 %}
+AllowUsers {{ base_sshd_allow_users | join(' ') }}
+{% endif %}
