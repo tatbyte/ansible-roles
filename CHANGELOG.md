@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v0.7.0] - 2026-03-08
+## [v0.7.0]
 ### Added
 - `examples/playbooks/bootstrap.yml`: New bootstrap phase playbook to run initial provisioning with bootstrap inventory credentials.
 - `examples/inventory/hosts.ini`: Added `[bootstrap:vars]` with dedicated bootstrap login/become variables used only by bootstrap phase.
