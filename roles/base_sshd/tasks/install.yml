@@ -1,0 +1,12 @@
+---
+# roles/base_sshd/tasks/install.yml
+# Install phase tasks for the `base_sshd` role.
+# Ensures the OpenSSH server package is present with APT before SSH daemon configuration.
+
+- name: "Install | Ensure SSH daemon packages are present"
+  ansible.builtin.apt:
+    name: "{{ base_sshd_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: base_sshd_packages | length > 0

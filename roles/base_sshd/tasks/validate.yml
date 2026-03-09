@@ -1,0 +1,92 @@
+---
+# roles/base_sshd/tasks/validate.yml
+# Validate phase tasks for the `base_sshd` role.
+# Verifies the managed SSH daemon drop-in, effective OpenSSH settings, and the enabled, running service state.
+
+- name: "Validate | Read SSH daemon drop-in"
+  ansible.builtin.slurp:
+    path: /etc/ssh/sshd_config.d/90-base-sshd.conf
+  register: base_sshd_config_file
+
+- name: "Validate | Gather service facts"
+  ansible.builtin.service_facts:
+
+- name: "Validate | Read baseline SSH daemon settings"
+  ansible.builtin.command: sshd -T -f /etc/ssh/sshd_config
+  register: base_sshd_effective_config
+  changed_when: false
+
+- name: "Validate | Read effective SSH daemon settings for required users"
+  vars:
+    base_sshd_validate_host: "{{ inventory_hostname }}"
+    base_sshd_validate_addr: >-
+      {{
+        ansible_default_ipv4.address
+        | default(ansible_all_ipv4_addresses | default([]) | first, true)
+        | default('127.0.0.1', true)
+      }}
+  ansible.builtin.command: >-
+    sshd -T -f /etc/ssh/sshd_config
+    -C user={{ item }},host={{ base_sshd_validate_host }},addr={{ base_sshd_validate_addr }}
+  loop: "{{ base_sshd_allow_users }}"
+  loop_control:
+    label: "{{ item }}"
+  register: base_sshd_allow_users_checks
+  changed_when: false
+  when: base_sshd_allow_users | length > 0
+
+- name: "Validate | Assert SSH daemon state"
+  vars:
+    base_sshd_expected_config: "{{ lookup('template', 'sshd_base.conf.j2') }}"
+    base_sshd_service_unit: >-
+      {{
+        base_sshd_service_name
+        if base_sshd_service_name.endswith('.service')
+        else (base_sshd_service_name ~ '.service')
+      }}
+    base_sshd_expected_password_authentication: >-
+      {{ 'yes' if base_sshd_password_authentication else 'no' }}
+    base_sshd_expected_pubkey_authentication: >-
+      {{ 'yes' if base_sshd_pubkey_authentication else 'no' }}
+  ansible.builtin.assert:
+    that:
+      - (base_sshd_config_file.content | b64decode) == base_sshd_expected_config
+      - base_sshd_service_unit in ansible_facts.services
+      - ansible_facts.services[base_sshd_service_unit].status == 'enabled'
+      - ansible_facts.services[base_sshd_service_unit].state == 'running'
+      - ('port ' ~ (base_sshd_port | string)) in base_sshd_effective_config.stdout_lines
+      - ('permitrootlogin ' ~ base_sshd_permit_root_login) in base_sshd_effective_config.stdout_lines
+      - ('passwordauthentication ' ~ base_sshd_expected_password_authentication) in base_sshd_effective_config.stdout_lines
+      - ('pubkeyauthentication ' ~ base_sshd_expected_pubkey_authentication) in base_sshd_effective_config.stdout_lines
+    fail_msg: >-
+      Configured SSH daemon state does not match the requested base_sshd
+      values
+    quiet: true
+
+- name: "Validate | Assert required users are allowed"
+  vars:
+    base_sshd_allowusers_values: >-
+      {{
+        item.stdout_lines
+        | select('match', '^allowusers ')
+        | map('regex_replace', '^allowusers\\s+', '')
+        | list
+      }}
+  ansible.builtin.assert:
+    that:
+      - base_sshd_allowusers_values | length > 0
+      - >-
+        (
+          base_sshd_allowusers_values
+          | select('search', '(^|\\s)' ~ (item.item | regex_escape) ~ '(\\s|$)')
+          | list
+          | length
+        ) > 0
+    fail_msg: >-
+      Effective AllowUsers for {{ item.item }} does not include the required
+      user. Effective AllowUsers={{ base_sshd_allowusers_values | join(', ') | default('(none)', true) }}
+    quiet: true
+  loop: "{{ base_sshd_allow_users_checks.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: base_sshd_allow_users | length > 0

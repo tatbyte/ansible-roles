@@ -1,0 +1,41 @@
+---
+# roles/base_sshd/tasks/assert.yml
+# Assert phase tasks for the `base_sshd` role.
+# Validates the requested SSH daemon package, service, and managed policy inputs before installation and configuration run.
+
+- name: "Assert | Validate base_sshd variable structure"
+  ansible.builtin.assert:
+    that:
+      - base_sshd_packages is sequence
+      - base_sshd_packages is not string
+      - base_sshd_service_name is string
+      - base_sshd_service_name | trim | length > 0
+      - base_sshd_port is integer
+      - base_sshd_port >= 1
+      - base_sshd_port <= 65535
+      - base_sshd_permit_root_login is string
+      - base_sshd_permit_root_login in ['yes', 'no', 'prohibit-password', 'forced-commands-only']
+      - base_sshd_password_authentication is boolean
+      - base_sshd_pubkey_authentication is boolean
+      - base_sshd_allow_users is sequence
+      - base_sshd_allow_users is not string
+      - (base_sshd_packages | map('string') | list | length) == (base_sshd_packages | length)
+      - (base_sshd_allow_users | map('string') | list | length) == (base_sshd_allow_users | length)
+      - (base_sshd_packages | map('trim') | reject('equalto', '') | list | length) == (base_sshd_packages | length)
+      - (base_sshd_allow_users | map('trim') | reject('equalto', '') | list | length) == (base_sshd_allow_users | length)
+      - >-
+        (
+          base_sshd_allow_users
+          | reject('equalto', '')
+          | reject('match', '.*\\s+.*')
+          | list
+          | length
+        ) == (base_sshd_allow_users | length)
+    fail_msg: >-
+      base_sshd_packages must be a list of package names, base_sshd_service_name
+      must be a non-empty service name, base_sshd_port must be between 1 and
+      65535, base_sshd_permit_root_login must use a supported OpenSSH value,
+      base_sshd_password_authentication and base_sshd_pubkey_authentication
+      must be booleans, and base_sshd_allow_users must be a list of non-empty
+      user names without whitespace
+    quiet: true
