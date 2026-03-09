@@ -1,13 +1,14 @@
-# Ansible Test Lab
+# examples/README.md
 
-This directory contains a minimal local harness for validating roles in this repository.
+Guide for the local example lab in `examples/`.
+Explains the example file layout, the explicit bootstrap phase, and the follow-up base phase.
 
 ## Structure
 - `ansible.cfg`: Test-specific Ansible configuration.
 - `inventory/hosts.ini`: Test inventory.
 - `inventory/group_vars/all.yml`: Shared variables for test hosts.
-- `playbooks/bootstrap.yml`: Bootstrap phase using the standalone `bootstrap` role.
-- `playbooks/base.yml`: Normal phase (connect as automation account).
+- `playbooks/bootstrap.yml`: Bootstrap phase playbook that connects with the initial admin account and applies the standalone `bootstrap` role.
+- `playbooks/base.yml`: Base phase playbook that connects as the automation account and applies the `base` role.
 - `playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
 
 ## Usage
@@ -41,7 +42,7 @@ The example inventory stores only the bootstrap login user:
 
 - `bootstrap_login_user`
 
-The bootstrap password is prompted once by `playbooks/bootstrap.yml` and reused for both SSH login and sudo.
+`playbooks/bootstrap.yml` prompts once for the bootstrap password and reuses it for both SSH login and sudo.
 
 ## Extending
 - Add playbooks under `examples/playbooks/`.

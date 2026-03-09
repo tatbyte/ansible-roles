@@ -1,5 +1,7 @@
 ---
-# base_packages assertions
+# roles/base_packages/tasks/assert.yml
+# Assert phase tasks for the `base_packages` role.
+# Validates the package list variables before package management runs.
 
 - name: "Assert | Validate base_packages variable structure"
   ansible.builtin.assert:

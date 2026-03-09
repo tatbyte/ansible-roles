@@ -1,3 +1,7 @@
+# .pre-commit-config.yaml
+# Pre-commit configuration for repository-wide linting and file hygiene checks.
+# Defines shared hooks for metadata validation, YAML formatting, and Ansible linting.
+
 minimum_pre_commit_version: "3.7.0"
 default_install_hook_types: [pre-commit, pre-push]
 

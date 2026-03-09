@@ -1,5 +1,7 @@
 ---
-# playbooks/site.yml
+# examples/playbooks/site.yml
+# Base-phase entry playbook for the example lab.
+# Imports `base.yml` so the base phase can be run through a stable entrypoint.
 
 - name: Include base playbook
   ansible.builtin.import_playbook: base.yml

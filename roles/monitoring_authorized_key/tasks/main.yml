@@ -1,5 +1,7 @@
 ---
 # roles/monitoring_authorized_key/tasks/main.yml
+# Task entrypoint for the `monitoring_authorized_key` role.
+# Imports the assert, configure, and validate phase files in order.
 
 - name: Monitoring_authorized_key | Assert
   ansible.builtin.import_tasks: assert.yml

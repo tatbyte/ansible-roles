@@ -1,7 +1,7 @@
-# bootstrap Role
+# roles/bootstrap/README.md
 
-Bootstraps a host by creating and validating the automation account (for example `ansible`).
-This role is typically run only in a bootstrap phase where Ansible connects using an initial admin account.
+Reference for the `bootstrap` role.
+Explains how the role creates and validates the automation account used after the bootstrap phase.
 
 ## Features
 - Ensures primary group exists for the automation account

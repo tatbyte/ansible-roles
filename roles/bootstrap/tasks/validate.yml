@@ -1,5 +1,7 @@
 ---
-# Bootstrap role: validation and verification tasks
+# roles/bootstrap/tasks/validate.yml
+# Validate phase tasks for the `bootstrap` role.
+# Verifies the resulting passwd, group, sudo, and authorized-key state after configuration.
 
 - name: "Validate | Collect Admin and Sudo Group Entries"
   ansible.builtin.getent:

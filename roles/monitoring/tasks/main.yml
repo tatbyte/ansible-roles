@@ -1,0 +1,4 @@
+---
+# roles/monitoring/tasks/main.yml
+# Task entrypoint for the `monitoring` role.
+# Intentionally empty because this aggregate role currently delegates work through meta dependencies.

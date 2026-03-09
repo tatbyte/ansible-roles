@@ -1,5 +1,7 @@
 ---
-# base_packages installation tasks
+# roles/base_packages/tasks/install.yml
+# Install phase tasks for the `base_packages` role.
+# Ensures the requested common packages are present on the target hosts.
 
 - name: "Install | Ensure requested packages are present"
   ansible.builtin.package:

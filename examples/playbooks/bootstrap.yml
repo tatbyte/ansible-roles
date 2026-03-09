@@ -1,4 +1,8 @@
 ---
+# examples/playbooks/bootstrap.yml
+# Bootstrap phase playbook for the example lab.
+# Prompts once for the bootstrap password, connects with the initial admin account, and applies the `bootstrap` role.
+
 - name: Bootstrap hosts using the initial admin account
   hosts: bootstrap
   become: true

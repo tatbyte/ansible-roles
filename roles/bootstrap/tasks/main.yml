@@ -1,5 +1,7 @@
 ---
 # roles/bootstrap/tasks/main.yml
+# Task entrypoint for the `bootstrap` role.
+# Imports the assert, config, and validate phase files in order.
 
 - name: Assert
   ansible.builtin.import_tasks: assert.yml

@@ -1,6 +1,7 @@
-# ansible-roles
+# README.md
 
-Reusable Ansible roles for homelab and infrastructure automation.
+Repository overview for `ansible-roles`.
+Explains the role collection layout, the intended consumption pattern from another repository, and the local example workflow.
 
 ## Overview
 This repository is a roles source repository. It is intended to be consumed by a separate infra repository that contains your environment-specific inventory and playbooks.
@@ -97,6 +98,13 @@ pre-commit run --all-files
 ```
 
 See [docs/00-pre-commit.mb](docs/00-pre-commit.mb) for full setup details.
+
+## Documentation
+Core repository docs:
+
+- [docs/01-examples.md](docs/01-examples.md): Example lab layout and execution flow
+- [docs/02-role-workflow.md](docs/02-role-workflow.md): Shared role phase structure
+- [docs/03-file-consistency.md](docs/03-file-consistency.md): File header and wording consistency rules
 
 ## License
 MIT
