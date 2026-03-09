@@ -6,8 +6,8 @@ Documents notable changes across repository structure, roles, examples, and docu
 ## [v0.8.0]
 ### Added
 - `roles/base_timezone/`: New role for enforcing the system timezone during the base phase.
-- `roles/base_timezone/defaults/main.yml`: Added `base_timezone_name` with `Etc/UTC` as the default timezone.
-- `roles/base_timezone/tasks/`: Added assert, config, and validate phase task files for timezone management.
+- `roles/base_timezone/defaults/main.yml`: Added `base_timezone_packages` and `base_timezone_name` defaults for timezone management.
+- `roles/base_timezone/tasks/`: Added assert, install, config, and validate phase task files for timezone management.
 - `roles/base_timezone/README.md`: Added role documentation for timezone management and direct usage.
 - `examples/inventory/group_vars/all/`: Split example shared variables into role-scoped files:
   - `bootstrap.yml`
@@ -20,12 +20,12 @@ Documents notable changes across repository structure, roles, examples, and docu
 - `README.md`: Added `base_timezone` to the available roles list and aligned role descriptions.
 - `examples/inventory/group_vars/`: Replaced the single `all.yml` file with a role-scoped `all/` directory for better readability.
 - `roles/base_packages/tasks/validate.yml`: Consolidated package validation into one assertion for installed packages and one assertion for removed packages to reduce noisy per-item output.
-- `roles/base_timezone/tasks/assert.yml`: Compact assert phase now validates timezone input and zoneinfo presence with fewer tasks.
-- `roles/base_timezone/tasks/validate.yml`: Compact validate phase now checks final timezone state with fewer tasks and avoids Jinja delimiters in assert conditions.
+- `roles/base_timezone/tasks/assert.yml`: Assert phase now validates timezone input only, leaving timezone-data verification to the install/validate flow.
+- `roles/base_timezone/tasks/validate.yml`: Compact validate phase now checks zoneinfo presence and final timezone state with fewer tasks and avoids Jinja delimiters in assert conditions.
 
 ### Fixed
 - Resolved `base_timezone` validation warning caused by Jinja templating delimiters inside `assert` conditions.
-- Resolved example `base_timezone` prerequisite gap by documenting and including `tzdata` in the example base package list.
+- Resolved `base_timezone` standalone failure path by making the role install its own timezone-data package instead of relying on `base_packages`.
 
 ### Documentation
 - Updated `docs/02-role-workflow.md` with guidance for compact, low-noise roles that still keep the phase-based structure.

@@ -7,7 +7,6 @@
 # Keep this role generic: only "common everywhere" packages belong here.
 base_packages_install:
   # HTTPS / repo / package trust
-  - tzdata            # timezone database required by the base_timezone role
   - ca-certificates   # trusted CA bundle for HTTPS downloads and APT repos
   - curl              # download files / test HTTP endpoints
   - wget              # alternative downloader, useful in scripts
