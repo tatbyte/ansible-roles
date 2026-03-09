@@ -11,4 +11,4 @@
   )
 ) -%}
 {%- endfor -%}
-{{- base_locale_locale_gen_lines | join('\n') -}}{{- '\n' if base_locale_locale_gen_lines | length > 0 else '' -}}
+{{- base_locale_locale_gen_lines | join('\n') -}}{{- '\n' if base_locale_locale_gen_lines | length > 0 else '' -}}{#- Keep empty renders free of trailing newlines. -#}
