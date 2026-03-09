@@ -1,0 +1,49 @@
+---
+# roles/base_locale/tasks/config.yml
+# Config phase tasks for the `base_locale` role.
+# Ensures requested locales exist and writes the Debian-family locale category configuration file.
+
+- name: "Config | Gather available locales"
+  ansible.builtin.command: locale -a
+  register: base_locale_available_locales
+  changed_when: false
+
+- name: "Config | Generate requested locales with localedef"
+  ansible.builtin.command:
+    argv:
+      - localedef
+      - -i
+      - "{{ item | regex_replace('\\..*$', '') }}"
+      - -f
+      - "{{ item | regex_replace('^.*\\.', '') }}"
+      - "{{ item }}"
+  changed_when: true
+  loop: "{{ base_locale_present }}"
+  when:
+    - >-
+      (
+        item
+        | lower
+        | regex_replace('\\.utf-8$', '.utf8')
+      ) not in (
+        base_locale_available_locales.stdout_lines
+        | map('lower')
+        | map('regex_replace', '\\.utf-8$', '.utf8')
+        | list
+      )
+    - item not in ['C', 'C.UTF-8', 'POSIX']
+
+- name: "Config | Write /etc/default/locale"
+  ansible.builtin.copy:
+    content: |-
+      LANG={{ base_locale_lang }}
+      {% if base_locale_lc_all | trim | length > 0 %}
+      LC_ALL={{ base_locale_lc_all }}
+      {% endif %}
+      {% if base_locale_lc_time | trim | length > 0 %}
+      LC_TIME={{ base_locale_lc_time }}
+      {% endif %}
+    dest: /etc/default/locale
+    owner: root
+    group: root
+    mode: "0644"

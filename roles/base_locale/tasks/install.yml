@@ -1,0 +1,12 @@
+---
+# roles/base_locale/tasks/install.yml
+# Install phase tasks for the `base_locale` role.
+# Ensures locale support packages are present with APT before locale generation and configuration.
+
+- name: "Install | Ensure locale packages are present"
+  ansible.builtin.apt:
+    name: "{{ base_locale_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: base_locale_packages | length > 0

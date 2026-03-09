@@ -1,0 +1,20 @@
+---
+# roles/base_locale/tasks/main.yml
+# Task entrypoint for the `base_locale` role.
+# Imports the assert, install, config, and validate phase files in order.
+
+- name: Assert
+  ansible.builtin.import_tasks: assert.yml
+  tags: [assert, base_locale_assert]
+
+- name: Install
+  ansible.builtin.import_tasks: install.yml
+  tags: [install, base_locale_install]
+
+- name: Config
+  ansible.builtin.import_tasks: config.yml
+  tags: [config, base_locale_config]
+
+- name: Validate
+  ansible.builtin.import_tasks: validate.yml
+  tags: [validate, base_locale_validate]

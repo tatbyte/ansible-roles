@@ -1,0 +1,12 @@
+---
+# roles/base_locale/defaults/main.yml
+# Default variables for the `base_locale` role.
+# Defines the locale packages, generated locales, and default locale category values enforced during the base phase.
+
+base_locale_lang: en_US.UTF-8
+base_locale_lc_all: ""
+base_locale_lc_time: ""
+base_locale_packages:
+  - locales
+base_locale_present:
+  - "{{ base_locale_lang }}"

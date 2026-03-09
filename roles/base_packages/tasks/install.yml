@@ -1,10 +1,12 @@
 ---
 # roles/base_packages/tasks/install.yml
 # Install phase tasks for the `base_packages` role.
-# Ensures the requested common packages are present on the target hosts.
+# Ensures the requested common packages are present on the target hosts with APT.
 
 - name: "Install | Ensure requested packages are present"
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: "{{ base_packages_install }}"
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: base_packages_install | length > 0

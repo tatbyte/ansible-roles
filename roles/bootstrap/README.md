@@ -1,7 +1,7 @@
 # roles/bootstrap/README.md
 
 Reference for the `bootstrap` role.
-Explains how the role creates and validates the automation account used after the bootstrap phase.
+Explains how the role creates and validates the automation account used after the bootstrap phase on Debian-family hosts in this repository.
 
 ## Features
 - Ensures primary group exists for the automation account

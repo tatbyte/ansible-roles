@@ -1,0 +1,29 @@
+---
+# roles/base_locale/tasks/assert.yml
+# Assert phase tasks for the `base_locale` role.
+# Validates the requested locale package list and locale category values before installation and configuration run.
+
+- name: "Assert | Validate base_locale variable structure"
+  ansible.builtin.assert:
+    that:
+      - base_locale_lang is string
+      - base_locale_lang | trim | length > 0
+      - base_locale_lc_all is string
+      - base_locale_lc_time is string
+      - base_locale_packages is sequence
+      - base_locale_packages is not string
+      - base_locale_present is sequence
+      - base_locale_present is not string
+      - (base_locale_packages | map('string') | list | length) == (base_locale_packages | length)
+      - (base_locale_present | map('string') | list | length) == (base_locale_present | length)
+      - (base_locale_packages | map('trim') | reject('equalto', '') | list | length) == (base_locale_packages | length)
+      - (base_locale_present | map('trim') | reject('equalto', '') | list | length) == (base_locale_present | length)
+      - (base_locale_present | unique | length) == (base_locale_present | length)
+      - base_locale_lang in base_locale_present
+      - base_locale_lc_all | trim | length == 0 or base_locale_lc_all in base_locale_present
+      - base_locale_lc_time | trim | length == 0 or base_locale_lc_time in base_locale_present
+    fail_msg: >-
+      base_locale_lang must be a non-empty locale name, optional LC_* overrides
+      must be present in base_locale_present, and base_locale_packages must be a
+      list of package names
+    quiet: true

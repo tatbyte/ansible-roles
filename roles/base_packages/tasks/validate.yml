@@ -1,11 +1,11 @@
 ---
 # roles/base_packages/tasks/validate.yml
 # Validate phase tasks for the `base_packages` role.
-# Verifies the requested packages are present after installation.
+# Verifies the requested packages are present after APT installation.
 
 - name: "Validate | Gather installed package facts"
   ansible.builtin.package_facts:
-    manager: auto
+    manager: apt
 
 - name: "Validate | Assert requested install packages are present"
   ansible.builtin.assert:
