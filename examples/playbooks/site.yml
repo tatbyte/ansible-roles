@@ -1,9 +1,5 @@
 ---
 # playbooks/site.yml
-# full provisioning flow: bootstrap first, then normal base configuration
-
-- name: Include bootstrap playbook
-  ansible.builtin.import_playbook: bootstrap.yml
 
 - name: Include base playbook
   ansible.builtin.import_playbook: base.yml

@@ -13,10 +13,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `roles/base/meta/main.yml`: Removed the bootstrap dependency; `base` now only orchestrates recurring base roles such as `base_packages`.
 - `roles/base/tasks/main.yml`: Kept as a placeholder task file while orchestration stays in meta dependencies.
-- `examples/playbooks/bootstrap.yml`: Now runs the standalone `bootstrap` role with the `bootstrap` phase tag and keeps the SSH reset scoped to the bootstrap playbook so base-only runs do not reconnect.
+- `examples/playbooks/bootstrap.yml`: Now runs the standalone `bootstrap` role with the `bootstrap` phase tag and prompts once for the bootstrap admin password, reusing it for both SSH login and sudo.
 - `examples/playbooks/base.yml`: Simplified to run `base` only, with the `base` phase tag and no phase-switch variable.
-- `examples/playbooks/site.yml`: Defines the full provisioning flow by importing `bootstrap.yml` before `base.yml`.
+- `examples/playbooks/site.yml`: Now imports only `base.yml`, leaving bootstrap as an explicit separate step instead of part of the default site flow.
 - `examples/inventory/group_vars/all.yml`: Renamed bootstrap example variables from `base_bootstrap_*` to `bootstrap_*`.
+- `examples/inventory/hosts.ini`: Removed example bootstrap password values so the inventory keeps only the bootstrap login user and relies on the playbook prompt for the shared password.
 - `roles/bootstrap/tasks/config.yml`: User primary group assignment targets the ensured group by name.
 
 ### Fixed
@@ -24,7 +25,7 @@ All notable changes to this project will be documented in this file.
 - Resolved bootstrap failure path where `Group <gid> does not exist` by ensuring the primary group before user creation.
 - Resolved example `Missing sudo password` follow-up by enabling optional passwordless sudo in bootstrap-managed account for the example flow.
 - `roles/bootstrap/tasks/main.yml`: Phase tags are now `bootstrap`, `bootstrap_assert`, `bootstrap_config`, and `bootstrap_validate`.
-- `examples/playbooks/bootstrap.yml`: Tagged `meta: reset_connection` with `bootstrap` so `--tags bootstrap` includes the reconnect step.
+- `examples/playbooks/bootstrap.yml`: Removed the duplicate SSH and sudo password prompts from the example bootstrap flow by using one shared prompted value.
 
 ### Documentation
 - Updated docs and READMEs to match current example topology and execution flow:

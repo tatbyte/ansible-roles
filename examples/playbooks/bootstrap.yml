@@ -2,19 +2,16 @@
 - name: Bootstrap hosts using the initial admin account
   hosts: bootstrap
   become: true
+
+  vars_prompt:
+    - name: bootstrap_admin_password
+      prompt: SSH password for bootstrap admin
+      private: true
+
   vars:
     ansible_user: "{{ bootstrap_login_user }}"
-    ansible_password: "{{ bootstrap_login_password }}"
-    ansible_become_password: "{{ bootstrap_become_password }}"
+    ansible_password: "{{ bootstrap_admin_password }}"
+    ansible_become_password: "{{ bootstrap_admin_password }}"
   roles:
     - role: bootstrap
-      tags: [bootstrap]
-
-- name: Reset SSH connection after bootstrap
-  hosts: bootstrap
-  gather_facts: false
-  # Keep the reconnect in the bootstrap playbook so normal base-only runs do not reset SSH.
-  tasks:
-    - name: Reset SSH connection
-      ansible.builtin.meta: reset_connection
       tags: [bootstrap]
