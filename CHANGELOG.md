@@ -3,6 +3,17 @@
 Release history for `ansible-roles`.
 Documents notable changes across repository structure, roles, examples, and documentation.
 
+## [v0.22.0]
+### Added
+- Added the `base_hosts` role for inventory-driven `/etc/hosts` management on Debian-family hosts, including defaults, compact phase tasks, template, role documentation, and example variables.
+
+### Changed
+- Added `base_hosts` to the aggregate `base` role as an explicit opt-in identity-and-resolution step gated by `base_include_hosts`.
+- Extended `base_hosts` to support optional manual host mappings in addition to inventory-driven entries.
+
+### Documentation
+- Updated repository, aggregate-role, and example documentation to describe the new optional hosts role and its example variable file.
+
 ## [v0.21.0]
 ### Added
 - Added the `base_upgrade` role for explicit Debian-family package upgrades, including defaults, full phase tasks, role documentation, and example variables.

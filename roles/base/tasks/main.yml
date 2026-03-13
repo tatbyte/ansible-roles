@@ -38,6 +38,14 @@
       tags: [base, base_hostname]
   tags: [base, base_hostname, assert, config, validate, base_hostname_assert, base_hostname_config, base_hostname_validate]
 
+- name: "Base | Include optional base_hosts role"
+  ansible.builtin.include_role:
+    name: base_hosts
+    apply:
+      tags: [base, base_hosts]
+  when: base_include_hosts | default(false)
+  tags: [base, base_hosts, assert, config, validate, base_hosts_assert, base_hosts_config, base_hosts_validate]
+
 - name: "Base | Include base_sudo role"
   ansible.builtin.include_role:
     name: base_sudo

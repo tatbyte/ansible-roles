@@ -78,10 +78,11 @@ Current order:
 3. `base_timezone`
 4. `base_ntp`
 5. `base_hostname`
-6. `base_sudo`
-7. `base_sshd`
+6. `base_hosts` when `base_include_hosts: true`
+7. `base_sudo`
+8. `base_sshd`
 
-Use this sequence to keep foundational packages and environment settings first, then time synchronization, then final host identity, sudo policy, and SSH daemon policy.
+Use this sequence to keep foundational packages and environment settings first, then time synchronization, then final host identity and optional peer host mappings, then sudo policy and SSH daemon policy.
 
 Optional current follow-up:
 

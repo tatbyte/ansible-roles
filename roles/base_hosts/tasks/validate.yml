@@ -1,0 +1,55 @@
+---
+# roles/base_hosts/tasks/validate.yml
+# Validate phase tasks for the `base_hosts` role.
+# Verifies the managed `/etc/hosts` block contains the requested inventory-driven and manual host mappings after configuration.
+
+- name: "Validate | Read /etc/hosts"
+  ansible.builtin.slurp:
+    path: /etc/hosts
+  register: base_hosts_file
+
+- name: "Validate | Assert managed marker state"
+  vars:
+    base_hosts_file_content: "{{ base_hosts_file.content | b64decode }}"
+  ansible.builtin.assert:
+    that:
+      - (base_hosts_block_marker | replace('{mark}', 'BEGIN')) in base_hosts_file_content
+      - (base_hosts_block_marker | replace('{mark}', 'END')) in base_hosts_file_content
+    fail_msg: >-
+      Configured /etc/hosts state is missing the requested base_hosts block
+      markers
+    quiet: true
+
+- name: "Validate | Assert /etc/hosts state"
+  ansible.builtin.assert:
+    that:
+      - >-
+        (
+          hostvars[item].ansible_host
+          ~ ' '
+          ~ item
+        ) in (base_hosts_file.content | b64decode)
+    fail_msg: >-
+      Configured /etc/hosts state does not match the requested base_hosts
+      values
+    quiet: true
+  loop: "{{ groups[base_hosts_inventory_group] }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: "Validate | Assert manual /etc/hosts state"
+  ansible.builtin.assert:
+    that:
+      - >-
+        (
+          item.ip
+          ~ ' '
+          ~ (item.names | join(' '))
+        ) in (base_hosts_file.content | b64decode)
+    fail_msg: >-
+      Configured /etc/hosts state does not match the requested
+      base_hosts_manual_entries values
+    quiet: true
+  loop: "{{ base_hosts_manual_entries }}"
+  loop_control:
+    label: "{{ item.ip }}"
