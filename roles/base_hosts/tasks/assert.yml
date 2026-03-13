@@ -1,0 +1,77 @@
+---
+# roles/base_hosts/tasks/assert.yml
+# Assert phase tasks for the `base_hosts` role.
+# Validates the requested inventory group, optional manual entries, marker format, and host mapping inputs before `/etc/hosts` management runs.
+
+- name: "Assert | Validate base_hosts variable structure"
+  ansible.builtin.assert:
+    that:
+      - base_hosts_inventory_group is string
+      - base_hosts_inventory_group | trim | length > 0
+      - base_hosts_inventory_group in groups
+      - (groups[base_hosts_inventory_group] | length) > 0
+      - base_hosts_manual_entries is sequence
+      - base_hosts_manual_entries is not string
+      - base_hosts_block_marker is string
+      - base_hosts_block_marker | trim | length > 0
+      - "'{mark}' in base_hosts_block_marker"
+    fail_msg: >-
+      base_hosts_inventory_group must be a non-empty inventory group that
+      exists and contains at least one host, base_hosts_manual_entries
+      must be a list, and base_hosts_block_marker must be a non-empty
+      marker string containing {mark}
+    quiet: true
+
+- name: "Assert | Validate inventory host mappings"
+  ansible.builtin.assert:
+    that:
+      - item is string
+      - item | trim | length > 0
+      - item == (item | trim)
+      - item is not match('.*\\s+.*')
+      - hostvars[item].ansible_host is defined
+      - hostvars[item].ansible_host is string
+      - hostvars[item].ansible_host | trim | length > 0
+      - hostvars[item].ansible_host == (hostvars[item].ansible_host | trim)
+      - hostvars[item].ansible_host is not match('.*\\s+.*')
+    fail_msg: >-
+      Every host in the requested base_hosts_inventory_group must have a
+      non-empty inventory hostname without whitespace and a non-empty
+      ansible_host value without whitespace
+    quiet: true
+  loop: "{{ groups[base_hosts_inventory_group] }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: "Assert | Validate manual host mappings"
+  ansible.builtin.assert:
+    that:
+      - item is mapping
+      - (item.keys() | difference(['ip', 'names']) | length) == 0
+      - item.ip is defined
+      - item.ip is string
+      - item.ip | trim | length > 0
+      - item.ip == (item.ip | trim)
+      - item.ip is not match('.*\\s+.*')
+      - item.names is defined
+      - item.names is sequence
+      - item.names is not string
+      - (item.names | length) > 0
+      - (item.names | map('string') | list | length) == (item.names | length)
+      - (item.names | map('trim') | reject('equalto', '') | list | length) == (item.names | length)
+      - >-
+        (
+          item.names
+          | select('match', '.*\\s+.*')
+          | list
+          | length
+        ) == 0
+    fail_msg: >-
+      Each base_hosts_manual_entries item must be a mapping with only ip and
+      names keys. ip must be a non-empty string without whitespace, and
+      names must be a non-empty list of non-empty hostnames without
+      whitespace
+    quiet: true
+  loop: "{{ base_hosts_manual_entries }}"
+  loop_control:
+    label: "{{ item.ip | default('manual-entry') }}"

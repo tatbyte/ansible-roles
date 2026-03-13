@@ -1,0 +1,8 @@
+---
+# roles/base_hosts/defaults/main.yml
+# Default variables for the `base_hosts` role.
+# Defines the inventory source group, optional manual entries, and managed marker used for cluster host mappings during the base phase.
+
+base_hosts_inventory_group: all
+base_hosts_manual_entries: []
+base_hosts_block_marker: "# {mark} ANSIBLE HOSTS"

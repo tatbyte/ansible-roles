@@ -1,0 +1,10 @@
+---
+# roles/base_hosts/tasks/config.yml
+# Config phase tasks for the `base_hosts` role.
+# Manages the inventory-driven and optional manual cluster host mappings through an Ansible-managed block in `/etc/hosts`.
+
+- name: "Config | Manage cluster hosts in /etc/hosts"
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "{{ base_hosts_block_marker }}"
+    block: "{{ lookup('template', 'hosts_block.j2') | trim }}"

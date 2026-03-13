@@ -7,6 +7,7 @@ Explains how the aggregate base role delegates recurring Debian-family host conf
 - Runs the recurring base configuration on every `base` execution
 - Keeps the aggregate base-role execution order in `roles/base/tasks/main.yml`
 - Includes `base_packages`, `base_locale`, `base_timezone`, `base_ntp`, `base_hostname`, `base_sudo`, and `base_sshd` through explicit `ansible.builtin.include_role` entries
+- Can insert `base_hosts` after `base_hostname` as an explicit opt-in identity-and-resolution step when `base_include_hosts: true`
 - Keeps aggregate include-task tags aligned with each child role's phase tags and role-specific tags so targeted runs such as `--tags validate` or `--tags base_packages_validate` stay predictable
 - Can include `base_firewall` as an explicit opt-in follow-up role when `base_include_firewall: true`
 - Can include `base_logging` as an explicit opt-in follow-up role when `base_include_logging: true`
@@ -27,7 +28,7 @@ Use `base` on Debian-family hosts after the bootstrap phase has already created 
 ```
 
 Bootstrap is handled separately by the standalone `bootstrap` role/playbook.
-Role-specific inputs for `base` currently come from `base_packages_*`, `base_hostname_*`, `base_locale_*`, `base_ntp_*`, `base_sudo_*`, `base_sshd_*`, `base_timezone_*`, optional `base_include_firewall` plus `base_firewall_*`, optional `base_include_logging` plus `base_logging_*`, optional `base_include_updates` plus `base_updates_*`, optional `base_include_apparmor` plus `base_apparmor_*`, and optional `base_include_upgrade` plus `base_upgrade_*`.
+Role-specific inputs for `base` currently come from `base_packages_*`, `base_hostname_*`, optional `base_include_hosts` plus `base_hosts_*`, `base_locale_*`, `base_ntp_*`, `base_sudo_*`, `base_sshd_*`, `base_timezone_*`, optional `base_include_firewall` plus `base_firewall_*`, optional `base_include_logging` plus `base_logging_*`, optional `base_include_updates` plus `base_updates_*`, optional `base_include_apparmor` plus `base_apparmor_*`, and optional `base_include_upgrade` plus `base_upgrade_*`.
 
 Current include order in `base` is:
 
@@ -36,8 +37,9 @@ Current include order in `base` is:
 3. `base_timezone`
 4. `base_ntp`
 5. `base_hostname`
-6. `base_sudo`
-7. `base_sshd`
+6. `base_hosts` when `base_include_hosts: true`
+7. `base_sudo`
+8. `base_sshd`
 
 `roles/base/tasks/main.yml` is the single source of truth for this sequence.
 This keeps foundational packages and system environment first, then time synchronization, then final host identity, sudo policy, and SSH daemon policy.

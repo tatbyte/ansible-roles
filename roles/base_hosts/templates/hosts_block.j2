@@ -1,0 +1,8 @@
+{# roles/base_hosts/templates/hosts_block.j2 #}
+{# Template for the managed `/etc/hosts` block in the `base_hosts` role. #}
+{% for host in groups[base_hosts_inventory_group] -%}
+{{ hostvars[host]['ansible_host'] }} {{ host }}
+{% endfor -%}
+{% for entry in base_hosts_manual_entries -%}
+{{ entry.ip }} {{ entry.names | join(' ') }}
+{% endfor -%}
