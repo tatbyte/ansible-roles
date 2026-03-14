@@ -9,6 +9,7 @@ Explains how the role applies explicit APT package upgrades on Debian-family hos
 - Applies either a safe upgrade or a full upgrade explicitly during the run
 - Optionally removes unused packages after the upgrade
 - Detects whether the host requires reboot after package maintenance
+- Exposes whether package upgrades, autoremove, or overall package maintenance changed the host during the run
 - Can reboot automatically only when explicitly enabled
 - Verifies the requested upgrade convergence and resulting reboot-required state after changes
 
@@ -49,6 +50,7 @@ base_upgrade_fail_if_reboot_required: false
 Use `base_updates` when you want to manage unattended-upgrades policy for future automatic maintenance.
 Use `base_upgrade` when you want a reviewable, immediate upgrade action during the current Ansible run.
 When `base_upgrade_allow_reboot: true`, prefer running the play with `serial: 1` so only one host upgrades and reboots at a time.
+This role also exposes `base_upgrade_upgrade_changed`, `base_upgrade_autoremove_changed`, and `base_upgrade_changed` for downstream roles such as `base_needrestart`.
 
 ## Dependencies
 None

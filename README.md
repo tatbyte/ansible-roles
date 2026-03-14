@@ -43,7 +43,7 @@ homelab-roles/
 
 ## Available Roles
 - `bootstrap`: Creates and validates the automation account used after the bootstrap phase.
-- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through explicit `include_role` ordering in `roles/base/tasks/main.yml` for `base_packages`, `base_locale`, `base_timezone`, `base_ntp`, `base_hostname`, optional `base_hosts`, optional `base_dns`, `base_sudo`, and `base_sshd`, with optional follow-up inclusion for `base_firewall`, `base_fail2ban`, `base_logging`, `base_updates`, `base_apparmor`, `base_auditd`, and `base_upgrade`.
+- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through explicit `include_role` ordering in `roles/base/tasks/main.yml` for `base_packages`, `base_locale`, `base_timezone`, `base_ntp`, `base_hostname`, optional `base_hosts`, optional `base_dns`, `base_sudo`, and `base_sshd`, with optional follow-up inclusion for `base_firewall`, `base_fail2ban`, `base_logging`, `base_updates`, `base_apparmor`, `base_auditd`, `base_upgrade`, and `base_needrestart`.
 - `base_apparmor`: Enforces a minimal AppArmor package and service baseline on Debian-family hosts during the base phase.
 - `base_auditd`: Enforces a minimal Linux audit daemon package, service, and baseline configuration on Debian-family hosts during the base phase.
 - `base_dns`: Enforces a minimal DNS resolver baseline through `systemd-resolved` on Debian-family hosts during the base phase.
@@ -51,7 +51,8 @@ homelab-roles/
 - `base_firewall`: Enforces an additive UFW baseline with managed default policies and requested allow or limit rules on Debian-family hosts during the base phase, with an optional purge mode for exact rebuilds.
 - `base_hosts`: Enforces inventory-driven and optional manual cluster host mappings through a managed `/etc/hosts` block on Debian-family hosts during the base phase.
 - `base_logging`: Enforces a persistent local journald baseline on Debian-family hosts during the base phase, with an optional volatile mode for non-persistent logs.
-- `base_upgrade`: Applies an explicit APT upgrade pass with optional autoremove and reboot handling on Debian-family hosts during the base phase.
+- `base_needrestart`: Runs `needrestart` in non-interactive batch mode and exposes pending service-restart or reboot follow-up state on Debian-family hosts during the base phase, while skipping the check automatically only when the same run's `base_upgrade` role reported no package-maintenance changes and no reboot-required follow-up.
+- `base_upgrade`: Applies an explicit APT upgrade pass with optional autoremove and reboot handling on Debian-family hosts during the base phase, and exposes package-maintenance change facts for downstream roles.
 - `base_updates`: Enforces a minimal unattended-upgrades baseline on Debian-family hosts during the base phase through managed APT periodic policy files.
 - `base_hostname`: Enforces the system hostname on Debian-family hosts during the base phase.
 - `base_locale`: Ensures requested locales exist and configures the system default locale on Debian-family hosts during the base phase.
@@ -125,6 +126,7 @@ ansible-playbook playbooks/site.yml
 ```
 
 See [examples/README.md](examples/README.md) and [docs/01-examples.md](docs/01-examples.md) for lab details.
+The current example lab intentionally keeps `base_upgrade` and strict `base_needrestart` follow-up enabled, so a base run may fail when pending reboot or service-restart work is detected after upgrades.
 
 ## Linting
 Pre-commit and linting are configured in this repository.

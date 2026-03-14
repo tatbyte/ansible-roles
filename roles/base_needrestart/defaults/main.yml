@@ -1,0 +1,10 @@
+---
+# roles/base_needrestart/defaults/main.yml
+# Default variables for the `base_needrestart` role.
+# Defines the package list, restart-check mode, and failure-policy behavior used for restart follow-up during the base phase.
+
+base_needrestart_packages:
+  - needrestart
+base_needrestart_mode: l
+base_needrestart_fail_if_reboot_required: false
+base_needrestart_fail_if_service_restart_required: false

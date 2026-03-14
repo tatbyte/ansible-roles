@@ -67,6 +67,27 @@
     - base_upgrade_reboot_required
     - not base_upgrade_fail_if_reboot_required
 
+- name: "Validate | Assert exposed upgrade-change facts"
+  ansible.builtin.assert:
+    that:
+      - (base_upgrade_upgrade_changed | type_debug) == 'bool'
+      - (base_upgrade_autoremove_changed | type_debug) == 'bool'
+      - (base_upgrade_changed | type_debug) == 'bool'
+      - >-
+        base_upgrade_changed
+        ==
+        (
+          (base_upgrade_upgrade_changed | bool)
+          or
+          (base_upgrade_autoremove_changed | bool)
+        )
+    fail_msg: >-
+      Exposed base_upgrade change facts are inconsistent.
+      changed={{ base_upgrade_changed | default('undefined') }};
+      upgrade_changed={{ base_upgrade_upgrade_changed | default('undefined') }};
+      autoremove_changed={{ base_upgrade_autoremove_changed | default('undefined') }}
+    quiet: true
+
 - name: "Validate | Assert upgrade state"
   vars:
     base_upgrade_expected_safe_summary_pattern: >-

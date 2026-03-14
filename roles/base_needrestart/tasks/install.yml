@@ -1,0 +1,11 @@
+---
+# roles/base_needrestart/tasks/install.yml
+# Install phase tasks for the `base_needrestart` role.
+# Ensures the requested needrestart package list is present before restart-check execution and validation.
+
+- name: "Install | Ensure needrestart packages are present"
+  ansible.builtin.apt:
+    name: "{{ base_needrestart_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

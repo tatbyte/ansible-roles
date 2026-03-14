@@ -123,3 +123,23 @@
       tags: [base, base_upgrade]
   when: base_include_upgrade | default(false)
   tags: [base, base_upgrade, assert, config, validate, base_upgrade_assert, base_upgrade_config, base_upgrade_validate]
+
+- name: "Base | Include optional base_needrestart role"
+  ansible.builtin.include_role:
+    name: base_needrestart
+    apply:
+      tags: [base, base_needrestart]
+  when: base_include_needrestart | default(false)
+  tags:
+    [
+      base,
+      base_needrestart,
+      assert,
+      install,
+      config,
+      validate,
+      base_needrestart_assert,
+      base_needrestart_install,
+      base_needrestart_config,
+      base_needrestart_validate,
+    ]

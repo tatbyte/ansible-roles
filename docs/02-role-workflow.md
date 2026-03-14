@@ -94,6 +94,7 @@ Optional current follow-up:
 5. `base_apparmor` when `base_include_apparmor: true`
 6. `base_auditd` when `base_include_auditd: true`
 7. `base_upgrade` when `base_include_upgrade: true`
+8. `base_needrestart` when `base_include_needrestart: true`
 
 Future optional follow-up roles should also be included explicitly from `roles/base/tasks/main.yml` and gated only by aggregate include flags.
 

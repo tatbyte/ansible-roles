@@ -3,6 +3,21 @@
 Release history for `homelab-roles`.
 Documents notable changes across repository structure, roles, examples, and documentation.
 
+## [v0.27.0]
+### Added
+- Added the `base_needrestart` role for Debian-family restart-check reporting, including defaults, full phase tasks, role documentation, and example variables.
+
+### Changed
+- Added `base_needrestart` to the aggregate `base` role as an explicit opt-in follow-up role gated by `base_include_needrestart`.
+- Exposed `base_upgrade_upgrade_changed`, `base_upgrade_autoremove_changed`, and `base_upgrade_changed` so downstream roles can consume package-maintenance change state directly.
+- Kept the example lab's `base_upgrade` role enabled by default so the example base run continues to exercise immediate package maintenance before `base_needrestart` reports follow-up state.
+- Tightened the example lab's `base_needrestart` variables so pending restart or reboot follow-up now fails the example run explicitly instead of only reporting it.
+
+### Documentation
+- Updated repository, aggregate-role, and example documentation to describe the new optional `needrestart` role, its example variable file, and the restart-check follow-up it exposes after package maintenance.
+- Clarified that the example lab intentionally uses strict `base_needrestart` failure flags after `base_upgrade`, and documented how to switch the example run back to report-only behavior when desired.
+- Documented that `base_needrestart` now skips its batch check automatically only when the same run's `base_upgrade` role reports no package-maintenance changes and no reboot-required follow-up.
+
 ## [v0.26.0]
 ### Changed
 - Added the GitGuardian `ggshield` secret-scanning hook to `.pre-commit-config.yaml` so staged changes are scanned for leaked credentials during the `pre-commit` stage.
