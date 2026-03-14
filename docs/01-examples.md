@@ -70,6 +70,7 @@ ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/tests/te
 - `base_upgrade.yml` sets `base_include_upgrade: true`, which keeps the example base run exercising immediate package maintenance so post-upgrade follow-up such as `base_needrestart` reflects the current host state.
 - `base_needrestart.yml` sets `base_include_needrestart: true`, which opts the example base run into the optional `base_needrestart` role and enables strict failure flags so pending restart or reboot follow-up is surfaced immediately without restarting services automatically.
 - This means the example base run may fail intentionally after package maintenance when restart follow-up is still pending; set the `base_needrestart_fail_if_*` values back to `false` for report-only example runs.
+- When the example run's `base_upgrade` role makes no package-maintenance changes and leaves no reboot-required follow-up, `base_needrestart` now skips the batch check automatically to reduce no-change noise.
 - `playbooks/base.yml` uses `serial: 1`, which is safer when optional roles such as `base_upgrade` may reboot a host during the run.
 - `ansible.cfg` sets `display_skipped_hosts = False`, so routine conditional skips from optional roles or gated tasks do not dominate the example output.
 - `hosts.ini` keeps default `ansible_user=ansible` in `[all:vars]`, while `[bootstrap:vars]` holds initial login values used only during bootstrap.

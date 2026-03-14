@@ -51,8 +51,8 @@ homelab-roles/
 - `base_firewall`: Enforces an additive UFW baseline with managed default policies and requested allow or limit rules on Debian-family hosts during the base phase, with an optional purge mode for exact rebuilds.
 - `base_hosts`: Enforces inventory-driven and optional manual cluster host mappings through a managed `/etc/hosts` block on Debian-family hosts during the base phase.
 - `base_logging`: Enforces a persistent local journald baseline on Debian-family hosts during the base phase, with an optional volatile mode for non-persistent logs.
-- `base_needrestart`: Runs `needrestart` in non-interactive batch mode and exposes pending service-restart or reboot follow-up state on Debian-family hosts during the base phase.
-- `base_upgrade`: Applies an explicit APT upgrade pass with optional autoremove and reboot handling on Debian-family hosts during the base phase.
+- `base_needrestart`: Runs `needrestart` in non-interactive batch mode and exposes pending service-restart or reboot follow-up state on Debian-family hosts during the base phase, while skipping the check automatically only when the same run's `base_upgrade` role reported no package-maintenance changes and no reboot-required follow-up.
+- `base_upgrade`: Applies an explicit APT upgrade pass with optional autoremove and reboot handling on Debian-family hosts during the base phase, and exposes package-maintenance change facts for downstream roles.
 - `base_updates`: Enforces a minimal unattended-upgrades baseline on Debian-family hosts during the base phase through managed APT periodic policy files.
 - `base_hostname`: Enforces the system hostname on Debian-family hosts during the base phase.
 - `base_locale`: Ensures requested locales exist and configures the system default locale on Debian-family hosts during the base phase.

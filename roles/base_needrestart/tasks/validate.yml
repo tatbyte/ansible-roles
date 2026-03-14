@@ -16,6 +16,14 @@
     - base_needrestart_service_restart_required
     - not base_needrestart_fail_if_service_restart_required
 
+- name: "Validate | Report skipped needrestart check after unchanged package maintenance"
+  ansible.builtin.debug:
+    msg: >-
+      needrestart check skipped because base_upgrade reported no package-maintenance
+      changes during this run and no reboot-required follow-up was already pending.
+  when:
+    - not (base_needrestart_check_ran | bool)
+
 - name: "Validate | Report pending reboot follow-up"
   ansible.builtin.debug:
     msg: >-
@@ -34,9 +42,25 @@
           | difference(ansible_facts.packages.keys() | list)
           | length
         ) == 0
-      - base_needrestart_batch_result.rc == 0
-      - base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-VER:\\s+')
-      - base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-KSTA:\\s+[0-9]+$')
+      - (base_needrestart_check_ran | type_debug) == 'bool'
+      - >-
+        (
+          not (base_needrestart_check_ran | bool)
+        ) or (
+          base_needrestart_batch_result.rc == 0
+        )
+      - >-
+        (
+          not (base_needrestart_check_ran | bool)
+        ) or (
+          base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-VER:\\s+')
+        )
+      - >-
+        (
+          not (base_needrestart_check_ran | bool)
+        ) or (
+          base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-KSTA:\\s+[0-9]+$')
+        )
       - (base_needrestart_kernel_status | int) in [0, 1, 2, 3]
       - >-
         (
@@ -52,7 +76,8 @@
         )
     fail_msg: >-
       Configured needrestart state does not match the requested
-      base_needrestart values. kernel_status={{ base_needrestart_kernel_status }};
+      base_needrestart values. check_ran={{ base_needrestart_check_ran | bool }};
+      kernel_status={{ base_needrestart_kernel_status }};
       reboot_required={{ base_needrestart_reboot_required | bool }};
       service_restart_required={{ base_needrestart_service_restart_required | bool }};
       services={{ base_needrestart_services_requiring_restart | join(', ') | default('(none)', true) }}

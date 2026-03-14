@@ -12,6 +12,7 @@
   ansible.builtin.apt:
     upgrade: "{{ base_upgrade_mode }}"
     force_apt_get: true
+  register: base_upgrade_upgrade_result
   environment:
     DEBIAN_FRONTEND: noninteractive
 
@@ -19,6 +20,7 @@
   ansible.builtin.apt:
     autoremove: true
     purge: false
+  register: base_upgrade_autoremove_result
   environment:
     DEBIAN_FRONTEND: noninteractive
   when: base_upgrade_autoremove
@@ -51,6 +53,36 @@
         )
         if base_upgrade_reboot_required_packages_file_state.stat.exists
         else []
+      }}
+    base_upgrade_upgrade_changed: >-
+      {{
+        (base_upgrade_upgrade_result.changed | default(false))
+        | to_json
+        | from_json
+      }}
+    base_upgrade_autoremove_changed: >-
+      {{
+        (
+          base_upgrade_autoremove_result.changed
+          if base_upgrade_autoremove_result is defined
+          else false
+        )
+        | to_json
+        | from_json
+      }}
+    base_upgrade_changed: >-
+      {{
+        (
+          (base_upgrade_upgrade_result.changed | default(false))
+          or
+          (
+            base_upgrade_autoremove_result.changed
+            if base_upgrade_autoremove_result is defined
+            else false
+          )
+        )
+        | to_json
+        | from_json
       }}
   changed_when: false
 

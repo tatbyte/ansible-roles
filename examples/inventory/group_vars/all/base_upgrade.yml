@@ -26,7 +26,7 @@ base_upgrade_autoremove: false
 # explicitly opt into that behavior. If you do enable automatic reboot,
 # keep the example playbook's `serial: 1` behavior so hosts are handled
 # one at a time.
-base_upgrade_allow_reboot: false
+base_upgrade_allow_reboot: true
 
 # Expose reboot-required state without failing the example run by default.
 base_upgrade_fail_if_reboot_required: false

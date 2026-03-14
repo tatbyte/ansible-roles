@@ -60,6 +60,7 @@ The SSH integration test playbook cleans up its temporary `/etc/ssh/sshd_config.
 `inventory/group_vars/all/base_upgrade.yml` sets `base_include_upgrade: true`, which keeps the example base run applying immediate package upgrades so post-upgrade follow-up such as `base_needrestart` reflects the current host state.
 `inventory/group_vars/all/base_needrestart.yml` sets `base_include_needrestart: true`, which opts the example base run into the optional `base_needrestart` role and enables strict failure flags so pending restart or reboot follow-up is surfaced immediately without restarting services automatically.
 This means the example base run may fail intentionally after package maintenance when restart follow-up is still pending; set the `base_needrestart_fail_if_*` values back to `false` for report-only example runs.
+When the example run's `base_upgrade` role makes no package-maintenance changes and leaves no reboot-required follow-up, `base_needrestart` now skips the batch check automatically to reduce no-change noise.
 `playbooks/base.yml` uses `serial: 1`, which is safer when optional roles such as `base_upgrade` may reboot a host during the run.
 `ansible.cfg` sets `display_skipped_hosts = False`, so optional-role and conditional-task skips are hidden during normal example runs.
 

@@ -3,6 +3,26 @@
 # Config phase tasks for the `base_needrestart` role.
 # Runs needrestart in non-interactive batch mode and exposes the resulting restart-follow-up state during the base phase.
 
+- name: "Config | Decide whether needrestart check should run"
+  ansible.builtin.set_fact:
+    base_needrestart_check_ran: >-
+      {{
+        (
+          base_upgrade_changed is not defined
+          or
+          (base_upgrade_changed | bool)
+          or
+          (
+            base_upgrade_reboot_required is defined
+            and
+            (base_upgrade_reboot_required | bool)
+          )
+        )
+        | to_json
+        | from_json
+      }}
+  changed_when: false
+
 - name: "Config | Run needrestart in non-interactive batch mode"
   ansible.builtin.command:
     argv:
@@ -15,6 +35,7 @@
   environment:
     DEBIAN_FRONTEND: noninteractive
     LC_ALL: C
+  when: base_needrestart_check_ran | bool
 
 - name: "Config | Expose needrestart state"
   ansible.builtin.set_fact:
@@ -36,6 +57,7 @@
         | regex_findall('(?m)^NEEDRESTART-CONT:\\s*(.+)$')
       }}
   changed_when: false
+  when: base_needrestart_check_ran | bool
   vars:
     base_needrestart_kernel_status_raw: >-
       {{
@@ -44,6 +66,15 @@
         | first
         | default('0', true)
       }}
+
+- name: "Config | Expose skipped needrestart state"
+  ansible.builtin.set_fact:
+    base_needrestart_kernel_status: 0
+    base_needrestart_services_requiring_restart: []
+    base_needrestart_sessions_requiring_restart: []
+    base_needrestart_containers_requiring_restart: []
+  changed_when: false
+  when: not (base_needrestart_check_ran | bool)
 
 - name: "Config | Expose derived needrestart follow-up flags"
   ansible.builtin.set_fact:
