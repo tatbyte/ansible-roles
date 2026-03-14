@@ -17,6 +17,7 @@ Explains how the aggregate base role delegates recurring Debian-family host conf
 - Can include `base_apparmor` as an explicit opt-in follow-up role when `base_include_apparmor: true`
 - Can include `base_auditd` as an explicit opt-in follow-up role when `base_include_auditd: true`
 - Can include `base_upgrade` as an explicit opt-in follow-up role when `base_include_upgrade: true`
+- Can include `base_needrestart` as an explicit opt-in follow-up role when `base_include_needrestart: true`
 
 ## Usage
 Use `base` on Debian-family hosts after the bootstrap phase has already created the automation account:
@@ -31,7 +32,7 @@ Use `base` on Debian-family hosts after the bootstrap phase has already created 
 ```
 
 Bootstrap is handled separately by the standalone `bootstrap` role/playbook.
-Role-specific inputs for `base` currently come from `base_packages_*`, `base_locale_*`, `base_timezone_*`, `base_ntp_*`, `base_hostname_*`, optional `base_include_hosts` plus `base_hosts_*`, optional `base_include_dns` plus `base_dns_*`, `base_sudo_*`, `base_sshd_*`, optional `base_include_firewall` plus `base_firewall_*`, optional `base_include_fail2ban` plus `base_fail2ban_*`, optional `base_include_logging` plus `base_logging_*`, optional `base_include_updates` plus `base_updates_*`, optional `base_include_apparmor` plus `base_apparmor_*`, optional `base_include_auditd` plus `base_auditd_*`, and optional `base_include_upgrade` plus `base_upgrade_*`.
+Role-specific inputs for `base` currently come from `base_packages_*`, `base_locale_*`, `base_timezone_*`, `base_ntp_*`, `base_hostname_*`, optional `base_include_hosts` plus `base_hosts_*`, optional `base_include_dns` plus `base_dns_*`, `base_sudo_*`, `base_sshd_*`, optional `base_include_firewall` plus `base_firewall_*`, optional `base_include_fail2ban` plus `base_fail2ban_*`, optional `base_include_logging` plus `base_logging_*`, optional `base_include_updates` plus `base_updates_*`, optional `base_include_apparmor` plus `base_apparmor_*`, optional `base_include_auditd` plus `base_auditd_*`, optional `base_include_upgrade` plus `base_upgrade_*`, and optional `base_include_needrestart` plus `base_needrestart_*`.
 
 Current include order in `base` is:
 
@@ -60,6 +61,7 @@ Optional follow-up role:
 5. `base_apparmor` when `base_include_apparmor: true`
 6. `base_auditd` when `base_include_auditd: true`
 7. `base_upgrade` when `base_include_upgrade: true`
+8. `base_needrestart` when `base_include_needrestart: true`
 
 ## License
 MIT

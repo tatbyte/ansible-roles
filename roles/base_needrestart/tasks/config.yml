@@ -1,0 +1,58 @@
+---
+# roles/base_needrestart/tasks/config.yml
+# Config phase tasks for the `base_needrestart` role.
+# Runs needrestart in non-interactive batch mode and exposes the resulting restart-follow-up state during the base phase.
+
+- name: "Config | Run needrestart in non-interactive batch mode"
+  ansible.builtin.command:
+    argv:
+      - needrestart
+      - -b
+      - -r
+      - "{{ base_needrestart_mode }}"
+  register: base_needrestart_batch_result
+  changed_when: false
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    LC_ALL: C
+
+- name: "Config | Expose needrestart state"
+  ansible.builtin.set_fact:
+    base_needrestart_kernel_status: >-
+      {{ (base_needrestart_kernel_status_raw | int) | to_json | from_json }}
+    base_needrestart_services_requiring_restart: >-
+      {{
+        base_needrestart_batch_result.stdout
+        | regex_findall('(?m)^NEEDRESTART-SVC:\\s*(.+)$')
+      }}
+    base_needrestart_sessions_requiring_restart: >-
+      {{
+        base_needrestart_batch_result.stdout
+        | regex_findall('(?m)^NEEDRESTART-SESS:\\s*(.+)$')
+      }}
+    base_needrestart_containers_requiring_restart: >-
+      {{
+        base_needrestart_batch_result.stdout
+        | regex_findall('(?m)^NEEDRESTART-CONT:\\s*(.+)$')
+      }}
+  changed_when: false
+  vars:
+    base_needrestart_kernel_status_raw: >-
+      {{
+        base_needrestart_batch_result.stdout
+        | regex_findall('(?m)^NEEDRESTART-KSTA:\\s*([0-9]+)$')
+        | first
+        | default('0', true)
+      }}
+
+- name: "Config | Expose derived needrestart follow-up flags"
+  ansible.builtin.set_fact:
+    base_needrestart_service_restart_required: >-
+      {{
+        ((base_needrestart_services_requiring_restart | length) > 0)
+        | to_json
+        | from_json
+      }}
+    base_needrestart_reboot_required: >-
+      {{ ((base_needrestart_kernel_status | int) > 1) | to_json | from_json }}
+  changed_when: false

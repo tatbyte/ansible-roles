@@ -12,3 +12,4 @@ base_include_apparmor: false
 base_include_auditd: false
 base_include_fail2ban: false
 base_include_upgrade: false
+base_include_needrestart: false

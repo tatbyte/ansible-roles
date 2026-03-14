@@ -1,0 +1,26 @@
+---
+# roles/base_needrestart/tasks/assert.yml
+# Assert phase tasks for the `base_needrestart` role.
+# Validates the requested package, restart-check mode, and failure-policy inputs before installation and restart-check execution run.
+
+- name: "Assert | Validate base_needrestart variable structure"
+  vars:
+    base_needrestart_allowed_modes:
+      - l
+  ansible.builtin.assert:
+    that:
+      - base_needrestart_packages is sequence
+      - base_needrestart_packages is not string
+      - (base_needrestart_packages | map('string') | list | length) == (base_needrestart_packages | length)
+      - (base_needrestart_packages | map('trim') | reject('equalto', '') | list | length) == (base_needrestart_packages | length)
+      - "'needrestart' in base_needrestart_packages"
+      - base_needrestart_mode is string
+      - base_needrestart_mode | trim | length > 0
+      - (base_needrestart_mode | lower) in base_needrestart_allowed_modes
+      - base_needrestart_fail_if_reboot_required is boolean
+      - base_needrestart_fail_if_service_restart_required is boolean
+    fail_msg: >-
+      base_needrestart_packages must be a list of non-empty package names that
+      includes needrestart, base_needrestart_mode must currently be l, and
+      the failure-policy values must be booleans
+    quiet: true

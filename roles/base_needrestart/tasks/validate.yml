@@ -1,0 +1,59 @@
+---
+# roles/base_needrestart/tasks/validate.yml
+# Validate phase tasks for the `base_needrestart` role.
+# Verifies the requested package state, successful needrestart execution, and the resulting restart-follow-up state after the batch check.
+
+- name: "Validate | Gather package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Validate | Report pending service restart follow-up"
+  ansible.builtin.debug:
+    msg: >-
+      Services still need restart follow-up:
+      {{ base_needrestart_services_requiring_restart | join(', ') }}
+  when:
+    - base_needrestart_service_restart_required
+    - not base_needrestart_fail_if_service_restart_required
+
+- name: "Validate | Report pending reboot follow-up"
+  ansible.builtin.debug:
+    msg: >-
+      Reboot follow-up is still required according to needrestart.
+      kernel_status={{ base_needrestart_kernel_status }}
+  when:
+    - base_needrestart_reboot_required
+    - not base_needrestart_fail_if_reboot_required
+
+- name: "Validate | Assert needrestart state"
+  ansible.builtin.assert:
+    that:
+      - >-
+        (
+          base_needrestart_packages
+          | difference(ansible_facts.packages.keys() | list)
+          | length
+        ) == 0
+      - base_needrestart_batch_result.rc == 0
+      - base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-VER:\\s+')
+      - base_needrestart_batch_result.stdout is search('(?m)^NEEDRESTART-KSTA:\\s+[0-9]+$')
+      - (base_needrestart_kernel_status | int) in [0, 1, 2, 3]
+      - >-
+        (
+          not base_needrestart_fail_if_service_restart_required
+        ) or (
+          not (base_needrestart_service_restart_required | bool)
+        )
+      - >-
+        (
+          not base_needrestart_fail_if_reboot_required
+        ) or (
+          not (base_needrestart_reboot_required | bool)
+        )
+    fail_msg: >-
+      Configured needrestart state does not match the requested
+      base_needrestart values. kernel_status={{ base_needrestart_kernel_status }};
+      reboot_required={{ base_needrestart_reboot_required | bool }};
+      service_restart_required={{ base_needrestart_service_restart_required | bool }};
+      services={{ base_needrestart_services_requiring_restart | join(', ') | default('(none)', true) }}
+    quiet: true

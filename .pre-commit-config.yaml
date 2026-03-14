@@ -1,3 +1,4 @@
+---
 # .pre-commit-config.yaml
 # Pre-commit configuration for repository-wide linting and file hygiene checks.
 # Defines shared hooks for metadata validation, YAML formatting, and Ansible linting.

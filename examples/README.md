@@ -10,7 +10,7 @@ The inventory variables and role inputs assume the repository's Debian-family de
 ## Structure
 - `ansible.cfg`: Test-specific Ansible configuration that points at the example inventory and hides skipped-host output for quieter local runs.
 - `inventory/hosts.ini`: Test inventory.
-- `inventory/group_vars/all/`: Shared variables for test hosts, split into per-role files such as `bootstrap.yml`, `base_packages.yml`, `base_hostname.yml`, `base_hosts.yml`, `base_dns.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, `base_sshd.yml`, `base_firewall.yml`, `base_fail2ban.yml`, `base_logging.yml`, `base_updates.yml`, `base_apparmor.yml`, `base_auditd.yml`, `base_upgrade.yml`, `base_timezone.yml`, and `monitoring_authorized_key.yml`.
+- `inventory/group_vars/all/`: Shared variables for test hosts, split into per-role files such as `bootstrap.yml`, `base_packages.yml`, `base_hostname.yml`, `base_hosts.yml`, `base_dns.yml`, `base_locale.yml`, `base_ntp.yml`, `base_sudo.yml`, `base_sshd.yml`, `base_firewall.yml`, `base_fail2ban.yml`, `base_logging.yml`, `base_updates.yml`, `base_apparmor.yml`, `base_auditd.yml`, `base_upgrade.yml`, `base_needrestart.yml`, `base_timezone.yml`, and `monitoring_authorized_key.yml`.
 - `playbooks/bootstrap.yml`: Bootstrap phase playbook that connects with the initial admin account and applies the standalone `bootstrap` role.
 - `playbooks/base.yml`: Base phase playbook that connects as the automation account, applies the `base` role, and uses `serial: 1` so reboot-capable base runs process one host at a time.
 - `playbooks/site.yml`: Base-phase entry playbook that imports `base.yml`.
@@ -57,7 +57,9 @@ The SSH integration test playbook cleans up its temporary `/etc/ssh/sshd_config.
 `inventory/group_vars/all/base_fail2ban.yml` sets `base_include_fail2ban: true`, which opts the example base run into the optional `base_fail2ban` role with a managed SSH jail baseline.
 `inventory/group_vars/all/base_hosts.yml` sets `base_include_hosts: true`, which opts the example base run into the optional `base_hosts` role so example hosts can resolve inventory peer names through `/etc/hosts`.
 `inventory/group_vars/all/base_dns.yml` sets `base_include_dns: true`, which opts the example base run into the optional `base_dns` role with an explicit `systemd-resolved` baseline.
-`inventory/group_vars/all/base_upgrade.yml` keeps `base_include_upgrade: false` by default, so the example lab documents the role inputs without making every base run apply immediate package upgrades.
+`inventory/group_vars/all/base_upgrade.yml` sets `base_include_upgrade: true`, which keeps the example base run applying immediate package upgrades so post-upgrade follow-up such as `base_needrestart` reflects the current host state.
+`inventory/group_vars/all/base_needrestart.yml` sets `base_include_needrestart: true`, which opts the example base run into the optional `base_needrestart` role and enables strict failure flags so pending restart or reboot follow-up is surfaced immediately without restarting services automatically.
+This means the example base run may fail intentionally after package maintenance when restart follow-up is still pending; set the `base_needrestart_fail_if_*` values back to `false` for report-only example runs.
 `playbooks/base.yml` uses `serial: 1`, which is safer when optional roles such as `base_upgrade` may reboot a host during the run.
 `ansible.cfg` sets `display_skipped_hosts = False`, so optional-role and conditional-task skips are hidden during normal example runs.
 

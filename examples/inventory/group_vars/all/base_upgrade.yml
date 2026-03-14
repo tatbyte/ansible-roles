@@ -3,11 +3,10 @@
 # Shared upgrade variables for the example lab.
 # Defines the aggregate-role opt-in plus the immediate APT upgrade behavior available during the base phase.
 
-# Keep the optional base_upgrade role disabled by default in the example lab.
-# This role performs immediate package maintenance, so `false` is the safer
-# normal value when you do not want every base run to apply upgrades, restart
-# services indirectly, or leave the host waiting for reboot.
-# It is set to `true` here only while actively testing the role behavior.
+# Keep the optional base_upgrade role enabled by default in the example lab.
+# This makes the example base run exercise immediate package maintenance as a
+# normal part of the full stack so post-upgrade follow-up such as
+# `base_needrestart` reflects current package state.
 # The example base playbook uses `serial: 1` so reboot-capable runs can
 # process one host at a time instead of upgrading and rebooting everything
 # in parallel.
