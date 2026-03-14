@@ -54,6 +54,27 @@ For Jinja templates:
 Avoid a blank line after Jinja header comments when template output is whitespace-sensitive.
 This helps prevent accidental leading newlines in managed files such as `/etc/locale.gen`.
 
+When the rendered file format supports comments and the output is not
+whitespace-sensitive, prefer adding visible managed-file comments near the top
+of the rendered content too.
+
+Example:
+
+```jinja
+{# roles/base_logging/templates/journald.conf.j2 #}
+{# Template for the managed `/etc/systemd/journald.conf` file in the `base_logging` role. #}
+# Managed by Ansible: base_logging
+# Source: roles/base_logging/templates/journald.conf.j2
+[Journal]
+```
+
+Skip visible managed-file comments when:
+
+- the rendered format does not reliably support the repository's comment style
+- the file is intentionally whitespace-sensitive
+- a different visible ownership marker already exists, such as `blockinfile`
+  markers in `/etc/hosts`
+
 For ignore or dotfiles:
 
 ```text

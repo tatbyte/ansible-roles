@@ -1,0 +1,66 @@
+---
+# roles/base_auditd/tasks/validate.yml
+# Validate phase tasks for the `base_auditd` role.
+# Verifies the requested package state, audit log directory state, managed auditd configuration file, and audit daemon service state after configuration.
+
+- name: "Validate | Gather package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Validate | Gather service facts"
+  ansible.builtin.service_facts:
+
+- name: "Validate | Read audit daemon configuration"
+  ansible.builtin.slurp:
+    path: /etc/audit/auditd.conf
+  register: base_auditd_config_file
+
+- name: "Validate | Read audit log directory state"
+  ansible.builtin.stat:
+    path: /var/log/audit
+  register: base_auditd_log_directory
+
+- name: "Validate | Assert audit daemon state"
+  vars:
+    base_auditd_expected_config: "{{ lookup('template', 'auditd.conf.j2') }}"
+    base_auditd_service_unit: >-
+      {{
+        base_auditd_service_name
+        if base_auditd_service_name.endswith('.service')
+        else (base_auditd_service_name ~ '.service')
+      }}
+    base_auditd_expected_service_statuses: >-
+      {{
+        ['enabled', 'enabled-runtime']
+        if base_auditd_enabled
+        else ['disabled']
+      }}
+  ansible.builtin.assert:
+    that:
+      - >-
+        (
+          base_auditd_packages
+          | difference(ansible_facts.packages.keys() | list)
+          | length
+        ) == 0
+      - base_auditd_log_directory.stat.exists
+      - base_auditd_log_directory.stat.isdir
+      - base_auditd_log_directory.stat.pw_name == 'root'
+      - base_auditd_log_directory.stat.gr_name == 'adm'
+      - (base_auditd_config_file.content | b64decode) == base_auditd_expected_config
+      - base_auditd_service_unit in ansible_facts.services
+      - ansible_facts.services[base_auditd_service_unit].status in base_auditd_expected_service_statuses
+      - >-
+        (
+          base_auditd_enabled
+          and ansible_facts.services[base_auditd_service_unit].state == 'running'
+        )
+        or
+        (
+          not base_auditd_enabled
+          and ansible_facts.services[base_auditd_service_unit].state != 'running'
+        )
+    fail_msg: >-
+      Configured audit daemon state does not match the requested
+      base_auditd values
+    quiet: true

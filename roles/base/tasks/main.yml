@@ -100,6 +100,14 @@
   when: base_include_apparmor | default(false)
   tags: [base, base_apparmor, assert, install, config, validate, base_apparmor_assert, base_apparmor_install, base_apparmor_config, base_apparmor_validate]
 
+- name: "Base | Include optional base_auditd role"
+  ansible.builtin.include_role:
+    name: base_auditd
+    apply:
+      tags: [base, base_auditd]
+  when: base_include_auditd | default(false)
+  tags: [base, base_auditd, assert, install, config, validate, base_auditd_assert, base_auditd_install, base_auditd_config, base_auditd_validate]
+
 - name: "Base | Include optional base_upgrade role"
   ansible.builtin.include_role:
     name: base_upgrade

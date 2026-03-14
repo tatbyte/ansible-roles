@@ -91,7 +91,8 @@ Optional current follow-up:
 2. `base_logging` when `base_include_logging: true`
 3. `base_updates` when `base_include_updates: true`
 4. `base_apparmor` when `base_include_apparmor: true`
-5. `base_upgrade` when `base_include_upgrade: true`
+5. `base_auditd` when `base_include_auditd: true`
+6. `base_upgrade` when `base_include_upgrade: true`
 
 Future optional follow-up roles should also be included explicitly from `roles/base/tasks/main.yml` and gated only by aggregate include flags.
 
@@ -111,3 +112,13 @@ This keeps `--tags validate` working across the aggregate stack and also allows 
 When you add a new aggregate child role or change a child role's tags, update the parent include-task tags to match so targeted execution keeps working as documented.
 
 Run the full workflow by running the playbook with no tag filter.
+
+## Optional Role Toggle Convention
+
+Use a consistent toggle pattern when you add new optional roles to the aggregate `base` stack.
+
+- Use `base_include_<role>` when the whole role is optional in the aggregate `base` role.
+- Use `<role>_enabled` only when the role manages a service and an installed-but-disabled state is a valid supported outcome.
+- Do not add `enabled` flags to roles that only enforce static configuration or one-time state.
+
+This keeps aggregate role selection separate from service state management and helps avoid unnecessary toggle sprawl across narrow configuration roles.

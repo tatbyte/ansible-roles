@@ -1,0 +1,10 @@
+---
+# roles/base_auditd/handlers/main.yml
+# Handlers for the `base_auditd` role.
+# Reloads the audit daemon configuration through `auditctl` when the managed
+# configuration changes while the service is enabled.
+
+- name: Reload audit daemon service
+  ansible.builtin.command: auditctl --signal HUP
+  changed_when: true
+  when: base_auditd_enabled
