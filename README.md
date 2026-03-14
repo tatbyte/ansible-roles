@@ -1,6 +1,6 @@
 # README.md
 
-Repository overview for `ansible-roles`.
+Repository overview for `homelab-roles`.
 Explains the role collection layout, the intended consumption pattern from another repository, and the local example workflow.
 
 ## Overview
@@ -26,7 +26,7 @@ Role implementations, package-management tasks, and example configuration assume
 
 ## Repository Layout
 ```text
-ansible-roles/
+homelab-roles/
 ├── roles/
 │   ├── base/
 │   ├── bootstrap/
@@ -43,8 +43,9 @@ ansible-roles/
 
 ## Available Roles
 - `bootstrap`: Creates and validates the automation account used after the bootstrap phase.
-- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through explicit `include_role` ordering in `roles/base/tasks/main.yml` for `base_packages`, `base_locale`, `base_timezone`, `base_ntp`, `base_hostname`, optional `base_hosts`, optional `base_dns`, `base_sudo`, and `base_sshd`, with optional follow-up inclusion for `base_firewall`, `base_logging`, `base_updates`, `base_apparmor`, and `base_upgrade`.
+- `base`: Aggregates recurring base-phase configuration for Debian-family hosts through explicit `include_role` ordering in `roles/base/tasks/main.yml` for `base_packages`, `base_locale`, `base_timezone`, `base_ntp`, `base_hostname`, optional `base_hosts`, optional `base_dns`, `base_sudo`, and `base_sshd`, with optional follow-up inclusion for `base_firewall`, `base_logging`, `base_updates`, `base_apparmor`, `base_auditd`, and `base_upgrade`.
 - `base_apparmor`: Enforces a minimal AppArmor package and service baseline on Debian-family hosts during the base phase.
+- `base_auditd`: Enforces a minimal Linux audit daemon package, service, and baseline configuration on Debian-family hosts during the base phase.
 - `base_dns`: Enforces a minimal DNS resolver baseline through `systemd-resolved` on Debian-family hosts during the base phase.
 - `base_firewall`: Enforces an additive UFW baseline with managed default policies and requested allow or limit rules on Debian-family hosts during the base phase, with an optional purge mode for exact rebuilds.
 - `base_hosts`: Enforces inventory-driven and optional manual cluster host mappings through a managed `/etc/hosts` block on Debian-family hosts during the base phase.
@@ -61,14 +62,14 @@ ansible-roles/
 - `monitoring_authorized_key`: Installs an SSH authorized key for monitoring-style inter-host access.
 
 ## Consume From Another Repo
-Recommended pattern: add this repository to your infra repository (submodule or vendored checkout), then point `roles_path` to `ansible-roles/roles`.
+Recommended pattern: add this repository to your infra repository (submodule or vendored checkout), then point `roles_path` to `homelab-roles/roles`.
 
 Example infra repo `ansible.cfg`:
 
 ```ini
 [defaults]
 inventory = ./inventory/hosts.ini
-roles_path = ./roles:./vendor/ansible-roles/roles
+roles_path = ./roles:./vendor/homelab-roles/roles
 ```
 
 Example infra playbook:
@@ -112,7 +113,7 @@ ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/site.yml
 Optional `base_sshd` integration check:
 
 ```sh
-ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/test_base_sshd.yml --tags base_sshd
+ANSIBLE_CONFIG=examples/ansible.cfg ansible-playbook examples/playbooks/tests/test_base_sshd.yml --tags base_sshd
 ```
 
 Or from the `examples/` directory:

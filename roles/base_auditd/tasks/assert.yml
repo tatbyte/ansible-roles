@@ -1,0 +1,39 @@
+---
+# roles/base_auditd/tasks/assert.yml
+# Assert phase tasks for the `base_auditd` role.
+# Validates the requested audit package, service, enabled-state, and minimal configuration inputs before installation and configuration run.
+
+- name: "Assert | Validate base_auditd variable structure"
+  vars:
+    base_auditd_allowed_flush_values:
+      - none
+      - incremental
+      - incremental_async
+      - data
+      - sync
+    base_auditd_allowed_log_formats:
+      - raw
+      - enriched
+  ansible.builtin.assert:
+    that:
+      - base_auditd_packages is sequence
+      - base_auditd_packages is not string
+      - base_auditd_service_name is string
+      - base_auditd_service_name | trim | length > 0
+      - base_auditd_enabled is boolean
+      - base_auditd_flush is string
+      - base_auditd_flush | trim | length > 0
+      - (base_auditd_flush | lower) in base_auditd_allowed_flush_values
+      - base_auditd_log_format is string
+      - base_auditd_log_format | trim | length > 0
+      - (base_auditd_log_format | lower) in base_auditd_allowed_log_formats
+      - (base_auditd_packages | map('string') | list | length) == (base_auditd_packages | length)
+      - (base_auditd_packages | map('trim') | reject('equalto', '') | list | length) == (base_auditd_packages | length)
+      - "'auditd' in base_auditd_packages"
+    fail_msg: >-
+      base_auditd_packages must be a list of non-empty package names that
+      includes auditd, base_auditd_service_name must be a non-empty service
+      name, base_auditd_enabled must be a boolean, base_auditd_flush must be
+      one of none, incremental, incremental_async, data, or sync, and
+      base_auditd_log_format must be raw or enriched
+    quiet: true

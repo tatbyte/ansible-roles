@@ -1,0 +1,11 @@
+---
+# roles/base_auditd/defaults/main.yml
+# Default variables for the `base_auditd` role.
+# Defines the audit package list, service, enabled state, and minimal auditd.conf values enforced during the base phase.
+
+base_auditd_packages:
+  - auditd
+base_auditd_service_name: auditd
+base_auditd_enabled: true
+base_auditd_flush: incremental_async
+base_auditd_log_format: enriched

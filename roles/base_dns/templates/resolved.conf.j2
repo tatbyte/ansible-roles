@@ -3,7 +3,12 @@
 {# Renders the Debian-family DNS baseline for systemd-resolved. #}
 {{
   (
-    ['[Resolve]', 'DNS=' ~ (base_dns_servers | join(' '))]
+    [
+      '# Managed by Ansible: base_dns',
+      '# Source: roles/base_dns/templates/resolved.conf.j2',
+      '[Resolve]',
+      'DNS=' ~ (base_dns_servers | join(' '))
+    ]
     + (
       ['Domains=' ~ (base_dns_search_domains | join(' '))]
       if base_dns_search_domains | length > 0

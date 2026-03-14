@@ -7,4 +7,5 @@
   ansible.builtin.blockinfile:
     path: /etc/hosts
     marker: "{{ base_hosts_block_marker }}"
+    prepend_newline: true
     block: "{{ lookup('template', 'hosts_block.j2') | trim }}"

@@ -1,0 +1,11 @@
+---
+# roles/base_auditd/tasks/install.yml
+# Install phase tasks for the `base_auditd` role.
+# Ensures the requested audit packages are present before audit daemon configuration and validation.
+
+- name: "Install | Ensure audit packages are present"
+  ansible.builtin.apt:
+    name: "{{ base_auditd_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

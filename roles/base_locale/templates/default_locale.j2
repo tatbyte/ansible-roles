@@ -3,7 +3,11 @@
 {#- Renders the Debian-family locale category configuration. -#}
 {{
   (
-    ['LANG=' ~ base_locale_lang]
+    [
+      '# Managed by Ansible: base_locale',
+      '# Source: roles/base_locale/templates/default_locale.j2',
+      'LANG=' ~ base_locale_lang
+    ]
     + (
       ['LC_ALL=' ~ base_locale_lc_all]
       if base_locale_lc_all | trim | length > 0

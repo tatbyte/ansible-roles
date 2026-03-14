@@ -1,7 +1,22 @@
 # CHANGELOG.md
 
-Release history for `ansible-roles`.
+Release history for `homelab-roles`.
 Documents notable changes across repository structure, roles, examples, and documentation.
+
+## [v0.24.0]
+### Added
+- Added the `base_auditd` role for Debian-family Linux audit baseline management, including defaults, handlers, full phase tasks, template, role documentation, and example variables.
+
+### Changed
+- Added `base_auditd` to the aggregate `base` role as an explicit opt-in follow-up role gated by `base_include_auditd`.
+- Reworked `base_auditd` configuration handling so audit daemon changes use a compatible `auditctl --signal HUP` reconfigure path instead of unsupported generic service reload or restart behavior.
+- Expanded the `base_auditd` managed log-directory and `auditd.conf` baseline so Debian-family hosts converge more reliably during service startup.
+- Added visible managed-file ownership comments to comment-friendly rendered config templates such as `base_auditd`, `base_dns`, `base_logging`, `base_locale`, `base_ntp`, and `base_sshd`.
+- Updated `base_hosts` to insert a blank line before the managed `/etc/hosts` block for friendlier readability.
+
+### Documentation
+- Updated repository, aggregate-role, and example documentation to describe the new optional audit role, its example variable file, and the current `homelab-roles` repository naming.
+- Added repository guidance for when rendered templates should include visible managed-file comments and when they should not.
 
 ## [v0.23.0]
 ### Added

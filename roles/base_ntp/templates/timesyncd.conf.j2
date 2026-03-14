@@ -3,7 +3,12 @@
 {# Renders the Debian-family NTP server configuration for systemd-timesyncd. #}
 {{
   (
-    ['[Time]', 'NTP=' ~ (base_ntp_servers | join(' '))]
+    [
+      '# Managed by Ansible: base_ntp',
+      '# Source: roles/base_ntp/templates/timesyncd.conf.j2',
+      '[Time]',
+      'NTP=' ~ (base_ntp_servers | join(' '))
+    ]
     + (
       ['FallbackNTP=' ~ (base_ntp_fallback_servers | join(' '))]
       if base_ntp_fallback_servers | length > 0

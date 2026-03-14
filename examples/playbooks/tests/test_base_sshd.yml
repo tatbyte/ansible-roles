@@ -1,5 +1,5 @@
 ---
-# examples/playbooks/test_base_sshd.yml
+# examples/playbooks/tests/test_base_sshd.yml
 # Integration test playbook for the `base_sshd` role in the example lab.
 # Exercises merged `sshd_config.d` fragments plus `Match User` and `Match Address` behavior, then removes the temporary fixture files.
 
